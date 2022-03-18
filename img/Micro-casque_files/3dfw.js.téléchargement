@@ -1,0 +1,2058 @@
+
+
+if(location.href.search('flix-3dqa')!=-1)
+    window.log4=function(){log4.history=log4.history||[];log4.history.push(arguments);if(this.console){console.log(Array.prototype.slice.call(arguments));}};
+else
+    window.log4=function(){};
+
+
+
+//V2
+
+/*3dfw*/
+
+window.threedfw=function(){}
+
+function loadComp(e, t) {
+    if (-1 != e.search(".js") && 0 === FlixjQ("script[src='" + e + "']").length) {
+        var c = document.createElement("script");
+        c.type = "text/javascript", c.src = e, c.onload = t, document.head.appendChild(c);
+    }
+    if (-1 != e.search(".css") && 0 === FlixjQ("link[href='" + e + "']").length) {
+        var n = document.createElement("link");
+        n.rel = "stylesheet", n.href = e, n.type = "text/css", n.onload = t, document.head.appendChild(n);
+    }
+}
+
+
+
+
+ /*!
+ * flixUAParser.js v0.7.18
+ * Lightweight JavaScript-based User-Agent string parser
+ * https://github.com/faisalman/ua-parser-js
+ *
+ * Copyright © 2012-2016 Faisal Salman <fyzlman@gmail.com>
+ * Dual licensed under GPLv2 or MIT
+ */    
+/*!
+ * flixUAParser.js v0.7.18
+ * Lightweight JavaScript-based User-Agent string parser
+ * https://github.com/faisalman/ua-parser-js
+ *
+ * Copyright © 2012-2016 Faisal Salman <fyzlman@gmail.com>
+ * Dual licensed under GPLv2 or MIT
+ */
+(function(window, undefined) {
+    "use strict";
+    var LIBVERSION = "0.7.18", EMPTY = "", UNKNOWN = "?", FUNC_TYPE = "function", UNDEF_TYPE = "undefined", OBJ_TYPE = "object", STR_TYPE = "string", MAJOR = "major", MODEL = "model", NAME = "name", TYPE = "type", VENDOR = "vendor", VERSION = "version", ARCHITECTURE = "architecture", CONSOLE = "console", MOBILE = "mobile", TABLET = "tablet", SMARTTV = "smarttv", WEARABLE = "wearable", EMBEDDED = "embedded";
+    var util = {
+        extend: function(regexes, extensions) {
+            var margedRegexes = {};
+            for (var i in regexes) {
+                if (extensions[i] && extensions[i].length % 2 === 0) {
+                    margedRegexes[i] = extensions[i].concat(regexes[i]);
+                } else {
+                    margedRegexes[i] = regexes[i];
+                }
+            }
+            return margedRegexes;
+        },
+        has: function(str1, str2) {
+            if (typeof str1 === "string") {
+                return str2.toLowerCase().indexOf(str1.toLowerCase()) !== -1;
+            } else {
+                return false;
+            }
+        },
+        lowerize: function(str) {
+            return str.toLowerCase();
+        },
+        major: function(version) {
+            return typeof version === STR_TYPE ? version.replace(/[^\d\.]/g, "").split(".")[0] : undefined;
+        },
+        trim: function(str) {
+            return str.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "");
+        }
+    };
+    var mapper = {
+        rgx: function(ua, arrays) {
+            var i = 0, j, k, p, q, matches, match;
+            while (i < arrays.length && !matches) {
+                var regex = arrays[i], props = arrays[i + 1];
+                j = k = 0;
+                while (j < regex.length && !matches) {
+                    matches = regex[j++].exec(ua);
+                    if (!!matches) {
+                        for (p = 0; p < props.length; p++) {
+                            match = matches[++k];
+                            q = props[p];
+                            if (typeof q === OBJ_TYPE && q.length > 0) {
+                                if (q.length == 2) {
+                                    if (typeof q[1] == FUNC_TYPE) {
+                                        this[q[0]] = q[1].call(this, match);
+                                    } else {
+                                        this[q[0]] = q[1];
+                                    }
+                                } else if (q.length == 3) {
+                                    if (typeof q[1] === FUNC_TYPE && !(q[1].exec && q[1].test)) {
+                                        this[q[0]] = match ? q[1].call(this, match, q[2]) : undefined;
+                                    } else {
+                                        this[q[0]] = match ? match.replace(q[1], q[2]) : undefined;
+                                    }
+                                } else if (q.length == 4) {
+                                    this[q[0]] = match ? q[3].call(this, match.replace(q[1], q[2])) : undefined;
+                                }
+                            } else {
+                                this[q] = match ? match : undefined;
+                            }
+                        }
+                    }
+                }
+                i += 2;
+            }
+        },
+        str: function(str, map) {
+            for (var i in map) {
+                if (typeof map[i] === OBJ_TYPE && map[i].length > 0) {
+                    for (var j = 0; j < map[i].length; j++) {
+                        if (util.has(map[i][j], str)) {
+                            return i === UNKNOWN ? undefined : i;
+                        }
+                    }
+                } else if (util.has(map[i], str)) {
+                    return i === UNKNOWN ? undefined : i;
+                }
+            }
+            return str;
+        }
+    };
+    var maps = {
+        browser: {
+            oldsafari: {
+                version: {
+                    "1.0": "/8",
+                    1.2: "/1",
+                    1.3: "/3",
+                    "2.0": "/412",
+                    "2.0.2": "/416",
+                    "2.0.3": "/417",
+                    "2.0.4": "/419",
+                    "?": "/"
+                }
+            }
+        },
+        device: {
+            amazon: {
+                model: {
+                    "Fire Phone": [ "SD", "KF" ]
+                }
+            },
+            sprint: {
+                model: {
+                    "Evo Shift 4G": "7373KT"
+                },
+                vendor: {
+                    HTC: "APA",
+                    Sprint: "Sprint"
+                }
+            }
+        },
+        os: {
+            windows: {
+                version: {
+                    ME: "4.90",
+                    "NT 3.11": "NT3.51",
+                    "NT 4.0": "NT4.0",
+                    2e3: "NT 5.0",
+                    XP: [ "NT 5.1", "NT 5.2" ],
+                    Vista: "NT 6.0",
+                    7: "NT 6.1",
+                    8: "NT 6.2",
+                    8.1: "NT 6.3",
+                    10: [ "NT 6.4", "NT 10.0" ],
+                    RT: "ARM"
+                }
+            }
+        }
+    };
+    var regexes = {
+        browser: [ [ /(opera\smini)\/([\w\.-]+)/i, /(opera\s[mobiletab]+).+version\/([\w\.-]+)/i, /(opera).+version\/([\w\.]+)/i, /(opera)[\/\s]+([\w\.]+)/i ], [ NAME, VERSION ], [ /(opios)[\/\s]+([\w\.]+)/i ], [ [ NAME, "Opera Mini" ], VERSION ], [ /\s(opr)\/([\w\.]+)/i ], [ [ NAME, "Opera" ], VERSION ], [ /(kindle)\/([\w\.]+)/i, /(lunascape|maxthon|netfront|jasmine|blazer)[\/\s]?([\w\.]*)/i, /(avant\s|iemobile|slim|baidu)(?:browser)?[\/\s]?([\w\.]*)/i, /(?:ms|\()(ie)\s([\w\.]+)/i, /(rekonq)\/([\w\.]*)/i, /(chromium|flock|rockmelt|midori|epiphany|silk|skyfire|ovibrowser|bolt|iron|vivaldi|iridium|phantomjs|bowser|quark)\/([\w\.-]+)/i ], [ NAME, VERSION ], [ /(trident).+rv[:\s]([\w\.]+).+like\sgecko/i ], [ [ NAME, "IE" ], VERSION ], [ /(edge|edgios|edgea)\/((\d+)?[\w\.]+)/i ], [ [ NAME, "Edge" ], VERSION ], [ /(yabrowser)\/([\w\.]+)/i ], [ [ NAME, "Yandex" ], VERSION ], [ /(puffin)\/([\w\.]+)/i ], [ [ NAME, "Puffin" ], VERSION ], [ /((?:[\s\/])uc?\s?browser|(?:juc.+)ucweb)[\/\s]?([\w\.]+)/i ], [ [ NAME, "UCBrowser" ], VERSION ], [ /(comodo_dragon)\/([\w\.]+)/i ], [ [ NAME, /_/g, " " ], VERSION ], [ /(micromessenger)\/([\w\.]+)/i ], [ [ NAME, "WeChat" ], VERSION ], [ /(qqbrowserlite)\/([\w\.]+)/i ], [ NAME, VERSION ], [ /(QQ)\/([\d\.]+)/i ], [ NAME, VERSION ], [ /m?(qqbrowser)[\/\s]?([\w\.]+)/i ], [ NAME, VERSION ], [ /(BIDUBrowser)[\/\s]?([\w\.]+)/i ], [ NAME, VERSION ], [ /(2345Explorer)[\/\s]?([\w\.]+)/i ], [ NAME, VERSION ], [ /(MetaSr)[\/\s]?([\w\.]+)/i ], [ NAME ], [ /(LBBROWSER)/i ], [ NAME ], [ /xiaomi\/miuibrowser\/([\w\.]+)/i ], [ VERSION, [ NAME, "MIUI Browser" ] ], [ /;fbav\/([\w\.]+);/i ], [ VERSION, [ NAME, "Facebook" ] ], [ /headlesschrome(?:\/([\w\.]+)|\s)/i ], [ VERSION, [ NAME, "Chrome Headless" ] ], [ /\swv\).+(chrome)\/([\w\.]+)/i ], [ [ NAME, /(.+)/, "$1 WebView" ], VERSION ], [ /((?:oculus|samsung)browser)\/([\w\.]+)/i ], [ [ NAME, /(.+(?:g|us))(.+)/, "$1 $2" ], VERSION ], [ /android.+version\/([\w\.]+)\s+(?:mobile\s?safari|safari)*/i ], [ VERSION, [ NAME, "Android Browser" ] ], [ /(chrome|omniweb|arora|[tizenoka]{5}\s?browser)\/v?([\w\.]+)/i ], [ NAME, VERSION ], [ /(dolfin)\/([\w\.]+)/i ], [ [ NAME, "Dolphin" ], VERSION ], [ /((?:android.+)crmo|crios)\/([\w\.]+)/i ], [ [ NAME, "Chrome" ], VERSION ], [ /(coast)\/([\w\.]+)/i ], [ [ NAME, "Opera Coast" ], VERSION ], [ /fxios\/([\w\.-]+)/i ], [ VERSION, [ NAME, "Firefox" ] ], [ /version\/([\w\.]+).+?mobile\/\w+\s(safari)/i ], [ VERSION, [ NAME, "Mobile Safari" ] ], [ /version\/([\w\.]+).+?(mobile\s?safari|safari)/i ], [ VERSION, NAME ], [ /webkit.+?(gsa)\/([\w\.]+).+?(mobile\s?safari|safari)(\/[\w\.]+)/i ], [ [ NAME, "GSA" ], VERSION ], [ /webkit.+?(mobile\s?safari|safari)(\/[\w\.]+)/i ], [ NAME, [ VERSION, mapper.str, maps.browser.oldsafari.version ] ], [ /(konqueror)\/([\w\.]+)/i, /(webkit|khtml)\/([\w\.]+)/i ], [ NAME, VERSION ], [ /(navigator|netscape)\/([\w\.-]+)/i ], [ [ NAME, "Netscape" ], VERSION ], [ /(swiftfox)/i, /(icedragon|iceweasel|camino|chimera|fennec|maemo\sbrowser|minimo|conkeror)[\/\s]?([\w\.\+]+)/i, /(firefox|seamonkey|k-meleon|icecat|iceape|firebird|phoenix|palemoon|basilisk|waterfox)\/([\w\.-]+)$/i, /(mozilla)\/([\w\.]+).+rv\:.+gecko\/\d+/i, /(polaris|lynx|dillo|icab|doris|amaya|w3m|netsurf|sleipnir)[\/\s]?([\w\.]+)/i, /(links)\s\(([\w\.]+)/i, /(gobrowser)\/?([\w\.]*)/i, /(ice\s?browser)\/v?([\w\._]+)/i, /(mosaic)[\/\s]([\w\.]+)/i ], [ NAME, VERSION ] ],
+        cpu: [ [ /(?:(amd|x(?:(?:86|64)[_-])?|wow|win)64)[;\)]/i ], [ [ ARCHITECTURE, "amd64" ] ], [ /(ia32(?=;))/i ], [ [ ARCHITECTURE, util.lowerize ] ], [ /((?:i[346]|x)86)[;\)]/i ], [ [ ARCHITECTURE, "ia32" ] ], [ /windows\s(ce|mobile);\sppc;/i ], [ [ ARCHITECTURE, "arm" ] ], [ /((?:ppc|powerpc)(?:64)?)(?:\smac|;|\))/i ], [ [ ARCHITECTURE, /ower/, "", util.lowerize ] ], [ /(sun4\w)[;\)]/i ], [ [ ARCHITECTURE, "sparc" ] ], [ /((?:avr32|ia64(?=;))|68k(?=\))|arm(?:64|(?=v\d+;))|(?=atmel\s)avr|(?:irix|mips|sparc)(?:64)?(?=;)|pa-risc)/i ], [ [ ARCHITECTURE, util.lowerize ] ] ],
+        device: [ [ /\((ipad|playbook);[\w\s\);-]+(rim|apple)/i ], [ MODEL, VENDOR, [ TYPE, TABLET ] ], [ /applecoremedia\/[\w\.]+ \((ipad)/ ], [ MODEL, [ VENDOR, "Apple" ], [ TYPE, TABLET ] ], [ /(apple\s{0,1}tv)/i ], [ [ MODEL, "Apple TV" ], [ VENDOR, "Apple" ] ], [ /(archos)\s(gamepad2?)/i, /(hp).+(touchpad)/i, /(hp).+(tablet)/i, /(kindle)\/([\w\.]+)/i, /\s(nook)[\w\s]+build\/(\w+)/i, /(dell)\s(strea[kpr\s\d]*[\dko])/i ], [ VENDOR, MODEL, [ TYPE, TABLET ] ], [ /(kf[A-z]+)\sbuild\/.+silk\//i ], [ MODEL, [ VENDOR, "Amazon" ], [ TYPE, TABLET ] ], [ /(sd|kf)[0349hijorstuw]+\sbuild\/.+silk\//i ], [ [ MODEL, mapper.str, maps.device.amazon.model ], [ VENDOR, "Amazon" ], [ TYPE, MOBILE ] ], [ /\((ip[honed|\s\w*]+);.+(apple)/i ], [ MODEL, VENDOR, [ TYPE, MOBILE ] ], [ /\((ip[honed|\s\w*]+);/i ], [ MODEL, [ VENDOR, "Apple" ], [ TYPE, MOBILE ] ], [ /(blackberry)[\s-]?(\w+)/i, /(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus|dell|meizu|motorola|polytron)[\s_-]?([\w-]*)/i, /(hp)\s([\w\s]+\w)/i, /(asus)-?(\w+)/i ], [ VENDOR, MODEL, [ TYPE, MOBILE ] ], [ /\(bb10;\s(\w+)/i ], [ MODEL, [ VENDOR, "BlackBerry" ], [ TYPE, MOBILE ] ], [ /android.+(transfo[prime\s]{4,10}\s\w+|eeepc|slider\s\w+|nexus 7|padfone)/i ], [ MODEL, [ VENDOR, "Asus" ], [ TYPE, TABLET ] ], [ /(sony)\s(tablet\s[ps])\sbuild\//i, /(sony)?(?:sgp.+)\sbuild\//i ], [ [ VENDOR, "Sony" ], [ MODEL, "Xperia Tablet" ], [ TYPE, TABLET ] ], [ /android.+\s([c-g]\d{4}|so[-l]\w+)\sbuild\//i ], [ MODEL, [ VENDOR, "Sony" ], [ TYPE, MOBILE ] ], [ /\s(ouya)\s/i, /(nintendo)\s([wids3u]+)/i ], [ VENDOR, MODEL, [ TYPE, CONSOLE ] ], [ /android.+;\s(shield)\sbuild/i ], [ MODEL, [ VENDOR, "Nvidia" ], [ TYPE, CONSOLE ] ], [ /(playstation\s[34portablevi]+)/i ], [ MODEL, [ VENDOR, "Sony" ], [ TYPE, CONSOLE ] ], [ /(sprint\s(\w+))/i ], [ [ VENDOR, mapper.str, maps.device.sprint.vendor ], [ MODEL, mapper.str, maps.device.sprint.model ], [ TYPE, MOBILE ] ], [ /(lenovo)\s?(S(?:5000|6000)+(?:[-][\w+]))/i ], [ VENDOR, MODEL, [ TYPE, TABLET ] ], [ /(htc)[;_\s-]+([\w\s]+(?=\))|\w+)*/i, /(zte)-(\w*)/i, /(alcatel|geeksphone|lenovo|nexian|panasonic|(?=;\s)sony)[_\s-]?([\w-]*)/i ], [ VENDOR, [ MODEL, /_/g, " " ], [ TYPE, MOBILE ] ], [ /(nexus\s9)/i ], [ MODEL, [ VENDOR, "HTC" ], [ TYPE, TABLET ] ], [ /d\/huawei([\w\s-]+)[;\)]/i, /(nexus\s6p)/i ], [ MODEL, [ VENDOR, "Huawei" ], [ TYPE, MOBILE ] ], [ /(microsoft);\s(lumia[\s\w]+)/i ], [ VENDOR, MODEL, [ TYPE, MOBILE ] ], [ /[\s\(;](xbox(?:\sone)?)[\s\);]/i ], [ MODEL, [ VENDOR, "Microsoft" ], [ TYPE, CONSOLE ] ], [ /(kin\.[onetw]{3})/i ], [ [ MODEL, /\./g, " " ], [ VENDOR, "Microsoft" ], [ TYPE, MOBILE ] ], [ /\s(milestone|droid(?:[2-4x]|\s(?:bionic|x2|pro|razr))?:?(\s4g)?)[\w\s]+build\//i, /mot[\s-]?(\w*)/i, /(XT\d{3,4}) build\//i, /(nexus\s6)/i ], [ MODEL, [ VENDOR, "Motorola" ], [ TYPE, MOBILE ] ], [ /android.+\s(mz60\d|xoom[\s2]{0,2})\sbuild\//i ], [ MODEL, [ VENDOR, "Motorola" ], [ TYPE, TABLET ] ], [ /hbbtv\/\d+\.\d+\.\d+\s+\([\w\s]*;\s*(\w[^;]*);([^;]*)/i ], [ [ VENDOR, util.trim ], [ MODEL, util.trim ], [ TYPE, SMARTTV ] ], [ /hbbtv.+maple;(\d+)/i ], [ [ MODEL, /^/, "SmartTV" ], [ VENDOR, "Samsung" ], [ TYPE, SMARTTV ] ], [ /\(dtv[\);].+(aquos)/i ], [ MODEL, [ VENDOR, "Sharp" ], [ TYPE, SMARTTV ] ], [ /android.+((sch-i[89]0\d|shw-m380s|gt-p\d{4}|gt-n\d+|sgh-t8[56]9|nexus 10))/i, /((SM-T\w+))/i ], [ [ VENDOR, "Samsung" ], MODEL, [ TYPE, TABLET ] ], [ /smart-tv.+(samsung)/i ], [ VENDOR, [ TYPE, SMARTTV ], MODEL ], [ /((s[cgp]h-\w+|gt-\w+|galaxy\snexus|sm-\w[\w\d]+))/i, /(sam[sung]*)[\s-]*(\w+-?[\w-]*)/i, /sec-((sgh\w+))/i ], [ [ VENDOR, "Samsung" ], MODEL, [ TYPE, MOBILE ] ], [ /sie-(\w*)/i ], [ MODEL, [ VENDOR, "Siemens" ], [ TYPE, MOBILE ] ], [ /(maemo|nokia).*(n900|lumia\s\d+)/i, /(nokia)[\s_-]?([\w-]*)/i ], [ [ VENDOR, "Nokia" ], MODEL, [ TYPE, MOBILE ] ], [ /android\s3\.[\s\w;-]{10}(a\d{3})/i ], [ MODEL, [ VENDOR, "Acer" ], [ TYPE, TABLET ] ], [ /android.+([vl]k\-?\d{3})\s+build/i ], [ MODEL, [ VENDOR, "LG" ], [ TYPE, TABLET ] ], [ /android\s3\.[\s\w;-]{10}(lg?)-([06cv9]{3,4})/i ], [ [ VENDOR, "LG" ], MODEL, [ TYPE, TABLET ] ], [ /(lg) netcast\.tv/i ], [ VENDOR, MODEL, [ TYPE, SMARTTV ] ], [ /(nexus\s[45])/i, /lg[e;\s\/-]+(\w*)/i, /android.+lg(\-?[\d\w]+)\s+build/i ], [ MODEL, [ VENDOR, "LG" ], [ TYPE, MOBILE ] ], [ /android.+([vl]k\-?\d{3})\s+build/i ], [ MODEL, [ VENDOR, "LGM" ], [ TYPE, TABLET ] ], [ /android\s3\.[\s\w;-]{10}(lgm?)-([06cv9]{3,4})/i ], [ [ VENDOR, "LGM" ], MODEL, [ TYPE, TABLET ] ], [ /(lgm) netcast\.tv/i ], [ VENDOR, MODEL, [ TYPE, SMARTTV ] ], [ /(nexus\s[45])/i, /lgm[e;\s\/-]+(\w*)/i, /android.+lgmM(\-?[\d\w]+)\s+build/i ], [ MODEL, [ VENDOR, "LGM" ], [ TYPE, MOBILE ] ], [ /android.+(ideatab[a-z0-9\-\s]+)/i ], [ MODEL, [ VENDOR, "Lenovo" ], [ TYPE, TABLET ] ], [ /linux;.+((jolla));/i ], [ VENDOR, MODEL, [ TYPE, MOBILE ] ], [ /((pebble))app\/[\d\.]+\s/i ], [ VENDOR, MODEL, [ TYPE, WEARABLE ] ], [ /android.+;\s(oppo)\s?([\w\s]+)\sbuild/i ], [ VENDOR, MODEL, [ TYPE, MOBILE ] ], [ /crkey/i ], [ [ MODEL, "Chromecast" ], [ VENDOR, "Google" ] ], [ /android.+;\s(glass)\s\d/i ], [ MODEL, [ VENDOR, "Google" ], [ TYPE, WEARABLE ] ], [ /android.+;\s(pixel c)\s/i ], [ MODEL, [ VENDOR, "Google" ], [ TYPE, TABLET ] ], [ /android.+;\s(pixel xl|pixel)\s/i ], [ MODEL, [ VENDOR, "Google" ], [ TYPE, MOBILE ] ], [ /android.+;\s(\w+)\s+build\/hm\1/i, /android.+(hm[\s\-_]*note?[\s_]*(?:\d\w)?)\s+build/i, /android.+(mi[\s\-_]*(?:one|one[\s_]plus|note lte)?[\s_]*(?:\d?\w?)[\s_]*(?:plus)?)\s+build/i, /android.+(redmi[\s\-_]*(?:note)?(?:[\s_]*[\w\s]+))\s+build/i ], [ [ MODEL, /_/g, " " ], [ VENDOR, "Xiaomi" ], [ TYPE, MOBILE ] ], [ /android.+(mi[\s\-_]*(?:pad)(?:[\s_]*[\w\s]+))\s+build/i ], [ [ MODEL, /_/g, " " ], [ VENDOR, "Xiaomi" ], [ TYPE, TABLET ] ], [ /android.+;\s(m[1-5]\snote)\sbuild/i ], [ MODEL, [ VENDOR, "Meizu" ], [ TYPE, TABLET ] ], [ /android.+a000(1)\s+build/i, /android.+oneplus\s(a\d{4})\s+build/i ], [ MODEL, [ VENDOR, "OnePlus" ], [ TYPE, MOBILE ] ], [ /android.+[;\/]\s*(RCT[\d\w]+)\s+build/i ], [ MODEL, [ VENDOR, "RCA" ], [ TYPE, TABLET ] ], [ /android.+[;\/\s]+(Venue[\d\s]{2,7})\s+build/i ], [ MODEL, [ VENDOR, "Dell" ], [ TYPE, TABLET ] ], [ /android.+[;\/]\s*(Q[T|M][\d\w]+)\s+build/i ], [ MODEL, [ VENDOR, "Verizon" ], [ TYPE, TABLET ] ], [ /android.+[;\/]\s+(Barnes[&\s]+Noble\s+|BN[RT])(V?.*)\s+build/i ], [ [ VENDOR, "Barnes & Noble" ], MODEL, [ TYPE, TABLET ] ], [ /android.+[;\/]\s+(TM\d{3}.*\b)\s+build/i ], [ MODEL, [ VENDOR, "NuVision" ], [ TYPE, TABLET ] ], [ /android.+;\s(k88)\sbuild/i ], [ MODEL, [ VENDOR, "ZTE" ], [ TYPE, TABLET ] ], [ /android.+[;\/]\s*(gen\d{3})\s+build.*49h/i ], [ MODEL, [ VENDOR, "Swiss" ], [ TYPE, MOBILE ] ], [ /android.+[;\/]\s*(zur\d{3})\s+build/i ], [ MODEL, [ VENDOR, "Swiss" ], [ TYPE, TABLET ] ], [ /android.+[;\/]\s*((Zeki)?TB.*\b)\s+build/i ], [ MODEL, [ VENDOR, "Zeki" ], [ TYPE, TABLET ] ], [ /(android).+[;\/]\s+([YR]\d{2})\s+build/i, /android.+[;\/]\s+(Dragon[\-\s]+Touch\s+|DT)(\w{5})\sbuild/i ], [ [ VENDOR, "Dragon Touch" ], MODEL, [ TYPE, TABLET ] ], [ /android.+[;\/]\s*(NS-?\w{0,9})\sbuild/i ], [ MODEL, [ VENDOR, "Insignia" ], [ TYPE, TABLET ] ], [ /android.+[;\/]\s*((NX|Next)-?\w{0,9})\s+build/i ], [ MODEL, [ VENDOR, "NextBook" ], [ TYPE, TABLET ] ], [ /android.+[;\/]\s*(Xtreme\_)?(V(1[045]|2[015]|30|40|60|7[05]|90))\s+build/i ], [ [ VENDOR, "Voice" ], MODEL, [ TYPE, MOBILE ] ], [ /android.+[;\/]\s*(LVTEL\-)?(V1[12])\s+build/i ], [ [ VENDOR, "LvTel" ], MODEL, [ TYPE, MOBILE ] ], [ /android.+[;\/]\s*(V(100MD|700NA|7011|917G).*\b)\s+build/i ], [ MODEL, [ VENDOR, "Envizen" ], [ TYPE, TABLET ] ], [ /android.+[;\/]\s*(Le[\s\-]+Pan)[\s\-]+(\w{1,9})\s+build/i ], [ VENDOR, MODEL, [ TYPE, TABLET ] ], [ /android.+[;\/]\s*(Trio[\s\-]*.*)\s+build/i ], [ MODEL, [ VENDOR, "MachSpeed" ], [ TYPE, TABLET ] ], [ /android.+[;\/]\s*(Trinity)[\-\s]*(T\d{3})\s+build/i ], [ VENDOR, MODEL, [ TYPE, TABLET ] ], [ /android.+[;\/]\s*TU_(1491)\s+build/i ], [ MODEL, [ VENDOR, "Rotor" ], [ TYPE, TABLET ] ], [ /android.+(KS(.+))\s+build/i ], [ MODEL, [ VENDOR, "Amazon" ], [ TYPE, TABLET ] ], [ /android.+(Gigaset)[\s\-]+(Q\w{1,9})\s+build/i ], [ VENDOR, MODEL, [ TYPE, TABLET ] ], [ /\s(tablet|tab)[;\/]/i, /\s(mobile)(?:[;\/]|\ssafari)/i ], [ [ TYPE, util.lowerize ], VENDOR, MODEL ], [ /(android[\w\.\s\-]{0,9});.+build/i ], [ MODEL, [ VENDOR, "Generic" ] ] ],
+        engine: [ [ /windows.+\sedge\/([\w\.]+)/i ], [ VERSION, [ NAME, "EdgeHTML" ] ], [ /(presto)\/([\w\.]+)/i, /(webkit|trident|netfront|netsurf|amaya|lynx|w3m)\/([\w\.]+)/i, /(khtml|tasman|links)[\/\s]\(?([\w\.]+)/i, /(icab)[\/\s]([23]\.[\d\.]+)/i ], [ NAME, VERSION ], [ /rv\:([\w\.]{1,9}).+(gecko)/i ], [ VERSION, NAME ] ],
+        os: [ [ /microsoft\s(windows)\s(vista|xp)/i ], [ NAME, VERSION ], [ /(windows)\snt\s6\.2;\s(arm)/i, /(windows\sphone(?:\sos)*)[\s\/]?([\d\.\s\w]*)/i, /(windows\smobile|windows)[\s\/]?([ntce\d\.\s]+\w)/i ], [ NAME, [ VERSION, mapper.str, maps.os.windows.version ] ], [ /(win(?=3|9|n)|win\s9x\s)([nt\d\.]+)/i ], [ [ NAME, "Windows" ], [ VERSION, mapper.str, maps.os.windows.version ] ], [ /\((bb)(10);/i ], [ [ NAME, "BlackBerry" ], VERSION ], [ /(blackberry)\w*\/?([\w\.]*)/i, /(tizen)[\/\s]([\w\.]+)/i, /(android|webos|palm\sos|qnx|bada|rim\stablet\sos|meego|contiki)[\/\s-]?([\w\.]*)/i, /linux;.+(sailfish);/i ], [ NAME, VERSION ], [ /(symbian\s?os|symbos|s60(?=;))[\/\s-]?([\w\.]*)/i ], [ [ NAME, "Symbian" ], VERSION ], [ /\((series40);/i ], [ NAME ], [ /mozilla.+\(mobile;.+gecko.+firefox/i ], [ [ NAME, "Firefox OS" ], VERSION ], [ /(nintendo|playstation)\s([wids34portablevu]+)/i, /(mint)[\/\s\(]?(\w*)/i, /(mageia|vectorlinux)[;\s]/i, /(joli|[kxln]?ubuntu|debian|suse|opensuse|gentoo|(?=\s)arch|slackware|fedora|mandriva|centos|pclinuxos|redhat|zenwalk|linpus)[\/\s-]?(?!chrom)([\w\.-]*)/i, /(hurd|linux)\s?([\w\.]*)/i, /(gnu)\s?([\w\.]*)/i ], [ NAME, VERSION ], [ /(cros)\s[\w]+\s([\w\.]+\w)/i ], [ [ NAME, "Chromium OS" ], VERSION ], [ /(sunos)\s?([\w\.\d]*)/i ], [ [ NAME, "Solaris" ], VERSION ], [ /\s([frentopc-]{0,4}bsd|dragonfly)\s?([\w\.]*)/i ], [ NAME, VERSION ], [ /(haiku)\s(\w+)/i ], [ NAME, VERSION ], [ /cfnetwork\/.+darwin/i, /ip[honead]{2,4}(?:.*os\s([\w]+)\slike\smac|;\sopera)/i ], [ [ VERSION, /_/g, "." ], [ NAME, "iOS" ] ], [ /(mac\sos\sx)\s?([\w\s\.]*)/i, /(macintosh|mac(?=_powerpc)\s)/i ], [ [ NAME, "Mac OS" ], [ VERSION, /_/g, "." ] ], [ /((?:open)?solaris)[\/\s-]?([\w\.]*)/i, /(aix)\s((\d)(?=\.|\)|\s)[\w\.])*/i, /(plan\s9|minix|beos|os\/2|amigaos|morphos|risc\sos|openvms)/i, /(unix)\s?([\w\.]*)/i ], [ NAME, VERSION ] ]
+    };
+    var flixUAParser = function(uastring, extensions) {
+        if (typeof uastring === "object") {
+            extensions = uastring;
+            uastring = undefined;
+        }
+        if (!(this instanceof flixUAParser)) {
+            return new flixUAParser(uastring, extensions).getResult();
+        }
+        var ua = uastring || (window && window.navigator && window.navigator.userAgent ? window.navigator.userAgent : EMPTY);
+        var rgxmap = extensions ? util.extend(regexes, extensions) : regexes;
+        this.getBrowser = function() {
+            var browser = {
+                name: undefined,
+                version: undefined
+            };
+            mapper.rgx.call(browser, ua, rgxmap.browser);
+            browser.major = util.major(browser.version);
+            return browser;
+        };
+        this.getCPU = function() {
+            var cpu = {
+                architecture: undefined
+            };
+            mapper.rgx.call(cpu, ua, rgxmap.cpu);
+            return cpu;
+        };
+        this.getDevice = function() {
+            var device = {
+                vendor: undefined,
+                model: undefined,
+                type: undefined
+            };
+            mapper.rgx.call(device, ua, rgxmap.device);
+            return device;
+        };
+        this.getEngine = function() {
+            var engine = {
+                name: undefined,
+                version: undefined
+            };
+            mapper.rgx.call(engine, ua, rgxmap.engine);
+            return engine;
+        };
+        this.getOS = function() {
+            var os = {
+                name: undefined,
+                version: undefined
+            };
+            mapper.rgx.call(os, ua, rgxmap.os);
+            return os;
+        };
+        this.getResult = function() {
+            return {
+                ua: this.getUA(),
+                browser: this.getBrowser(),
+                engine: this.getEngine(),
+                os: this.getOS(),
+                device: this.getDevice(),
+                cpu: this.getCPU()
+            };
+        };
+        this.getUA = function() {
+            return ua;
+        };
+        this.setUA = function(uastring) {
+            ua = uastring;
+            return this;
+        };
+        return this;
+    };
+    flixUAParser.VERSION = LIBVERSION;
+    flixUAParser.BROWSER = {
+        NAME: NAME,
+        MAJOR: MAJOR,
+        VERSION: VERSION
+    };
+    flixUAParser.CPU = {
+        ARCHITECTURE: ARCHITECTURE
+    };
+    flixUAParser.DEVICE = {
+        MODEL: MODEL,
+        VENDOR: VENDOR,
+        TYPE: TYPE,
+        CONSOLE: CONSOLE,
+        MOBILE: MOBILE,
+        SMARTTV: SMARTTV,
+        TABLET: TABLET,
+        WEARABLE: WEARABLE,
+        EMBEDDED: EMBEDDED
+    };
+    flixUAParser.ENGINE = {
+        NAME: NAME,
+        VERSION: VERSION
+    };
+    flixUAParser.OS = {
+        NAME: NAME,
+        VERSION: VERSION
+    };
+    if (typeof exports !== UNDEF_TYPE) {
+        if (typeof module !== UNDEF_TYPE && module.exports) {
+            exports = module.exports = flixUAParser;
+        }
+        exports.flixUAParser = flixUAParser;
+    } else {
+        window.flixUAParser = flixUAParser;
+    }
+    var $ = window && (window.jQuery || window.Zepto);
+    if (typeof $ !== UNDEF_TYPE) {
+        var parser = new flixUAParser();
+        $.ua = parser.getResult();
+        $.ua.get = function() {
+            return parser.getUA();
+        };
+        $.ua.set = function(uastring) {
+            parser.setUA(uastring);
+            var result = parser.getResult();
+            for (var prop in result) {
+                $.ua[prop] = result[prop];
+            }
+        };
+    }
+})(typeof window === "object" ? window : this);
+var flixarparser = "";
+flixarparser = new flixUAParser();
+var flixAllowedModel = {
+    brand: {
+        Acer: {},
+        Asus: {
+            Z01QD: 7,
+            A002A: 7,
+            A002: 7,
+            A002: 7,
+            ZS571KL: 7,
+            "T00G TW_a600cg": 7,
+            Zenfone6: 7,
+            "Zenfone 6": 7,
+            T00G: 7,
+            Z002: 7
+        },
+        Google: {
+            "Nexus 5X": 7,
+            "Nexus 6P": 7,
+            Pixel: 7,
+            "Pixel XL": 7,
+            "Pixel 2": 7,
+            "Pixel 2 XL": 7,
+            "Pixel 3": 7,
+            "Pixel 3 XL": 7,
+            "Pixel 3a": 7,
+            "Pixel 3a XL": 7
+        },
+        Nokia: {
+            "TA-1033": 7,
+            "TA-1021": 7,
+            "TA-1003": 7,
+            "TA-1000": 7,
+            "Nokia 6.1": 7,
+            "TA-1041": 7,
+            "TA-1052": 7,
+            "TA-1012": 7,
+            "Nokia 8": 7,
+            "Nokia 6": 7,
+            "Nokia 6.1": 7,
+            "6.1 Plus": 7,
+            "6.1 Plus": 7,
+            X6: 7,
+            "NokiaX6-00": 7,
+            "7 plus": 7,
+            "Nokia 7 plus": 7,
+            7.1: 7,
+            "Nokia 7.1": 7,
+            "TA-1004": 8,
+            "TA-1012": 8,
+            "TA-1052": 8,
+            "Nokia 8 Sirocco": 7,
+            "8 Sirocco": 7,
+            "X7-00": 7,
+            8.1: 7,
+            X7: 7
+        },
+        Huawei: {
+            "JSN-L22": 7,
+            "JSN-L21": 7,
+            "COL-L29": 7,
+            "COL-AL10": 7,
+            "BKL-L04": 7,
+            "PCT-AL10": 7,
+            "PCT-TL10": 7,
+            "PCT-L29": 7,
+            "SNE-LX1": 7,
+            "HMA-L29": 7,
+            "HMA-L09": 7,
+            "HMA-LX9": 7,
+            "HMA-AL00": 7,
+            "LYA-L09": 7,
+            "LYA-L29": 7,
+            "LYA-AL00": 7,
+            "LYA-AL10": 7,
+            "LYA-TL00": 7,
+            "LYA-L0C": 7,
+            "EVR-L29": 7,
+            "EVR-AL00": 7,
+            "EVR-TL00": 7,
+            "PAR-LX9": 7,
+            "PAR-LX1M": 7,
+            "PAR-LX1": 7,
+            "HWI-AL00": 7,
+            "INE-LX2": 7,
+            "VCE-AL00": 7,
+            "VCE-TL00": 7,
+            "VCE-L22": 7,
+            "EML-AL00": 7,
+            "EML-L09": 7,
+            "EML-L29": 7,
+            "CLT-AL01": 7,
+            "CLT-AL00": 7,
+            "CLT-L04": 7,
+            "CLT-L09": 7,
+            "CLT-L29": 7,
+            "P20 Pro": 7,
+            P20_Pro: 7,
+            "ELE-L29": 7,
+            "ELE-L09": 7,
+            "ELE-AL00": 7,
+            "ELE-TL00": 7,
+            "VOG-L29": 7,
+            "VOG-L09": 7,
+            "VOG-AL00": 7,
+            "VOG-TL00": 7,
+            "VOG-L04": 7,
+            "Neo-L29": 7,
+            "LYA-L29": 7,
+            "LYA-AL00P": 7,
+            "JKM-LX1": 7,
+            "JKM-LX2": 7,
+            "JKM-LX3": 7,
+            "JKM-AL00": 7,
+            "JKM-TL00": 7,
+            "JKM-AL00a": 7
+        },
+        LG: {
+            "LGM-G600K": 8,
+            "LG-H870AR": 8,
+            "LG-H872PR": 8,
+            "LG-H870I": 8,
+            "LGM-G600S": 8,
+            "LG-M700": 8,
+            M700: 8,
+            "LGM-G600L": 8,
+            "LG-H871": 8,
+            VS988: 8,
+            "LG-H872": 8,
+            LGUS997: 8,
+            "LG-H870": 8,
+            H870: 8,
+            "LG-H870K": 8,
+            "LG-H870S": 8,
+            "LG-H870V": 8,
+            "LG-H870DS": 8,
+            "LG-H873": 8,
+            LS993: 8,
+            "G6+": 8,
+            "LGM-G600L": 8,
+            "LM-G710": 7,
+            "LM-G710N": 7,
+            "LM-G710VM": 7,
+            "LM-G710N": 7,
+            "LM-G710VM": 7,
+            "LM-G710": 7,
+            "LM-G820N": 7,
+            LMG820QM7: 7,
+            "LM-G820UMB": 7,
+            LMG820UM0: 7,
+            LMG820UM1: 7,
+            LMG820UM2: 7,
+            "US700 ": 7,
+            "LG-US700": 7,
+            "LGM-X600L ": 7,
+            "LGM-X600K ": 7,
+            "LGM-X600S ": 7,
+            "M703 ": 7,
+            "LG-M703": 7,
+            "M-703": 7,
+            "M700 ": 7,
+            "LG-M700": 7,
+            H970: 7,
+            "LG-H970": 7,
+            AS998: 8,
+            "LG-AS998": 8,
+            "LGM-V300K": 8,
+            "LGM-V300S": 8,
+            V300L: 8,
+            "LGM-V300L": 8,
+            H933: 8,
+            "LG-H933": 8,
+            VS996: 8,
+            H932: 8,
+            "LG-H932": 8,
+            H930: 8,
+            "LG-H930": 8,
+            US998: 8,
+            "LG-US998": 8,
+            "LG V30": 8,
+            H970: 8,
+            "LG-H970": 8,
+            "L-01K": 8,
+            V35: 8,
+            "V.35": 8,
+            LGV35: 8,
+            LS998: 8,
+            "LG-LS998": 8,
+            "LM-V350": 7,
+            "LM-V405": 7,
+            V405: 7
+        },
+        Motorola: {
+            XT1804: 7,
+            XT1805: 7,
+            XT1925DL: 7,
+            "g(6) (XT1925DL)": 7,
+            "g(6) plus": 7,
+            "g(7)": 7,
+            "g(7) plus": 7,
+            "g(7) power": 7,
+            "g(7) play": 7,
+            one: 7,
+            "one power": 7,
+            XT1942: 7,
+            x4: 8,
+            "Z2 Force": 7,
+            z3: 7,
+            "Z3 Play": 7
+        },
+        ONEPLUS: {
+            A3010: 8,
+            A5000: 7,
+            A5010: 7,
+            A6000: 7,
+            A6010: 7
+        },
+        Oppo: {
+            CPH1877: 7
+        },
+        Samsung: {
+            "SM-A320FDS": 8,
+            "SM-A320YDS": 8,
+            "SM-A320Y": 8,
+            "SM-A320Y": 8,
+            "SM-A320F": 8,
+            "SM-A320F": 8,
+            "SM-A320FL": 8,
+            "SM-A320FL": 8,
+            "SM-A520K": 7,
+            "SM-A520K": 7,
+            "SM-A520L": 7,
+            "SM-A520L": 7,
+            "SM-A520S": 7,
+            "SM-A520S": 7,
+            "SM-A600G": 7,
+            "SM-A600G": 7,
+            "SM-A600FN": 7,
+            "SM-A600FN": 7,
+            "SM-A720S": 7,
+            "SM-A720S": 7,
+            "SM-A720F": 7,
+            "SM-A720F": 7,
+            "Galaxy A7(2017)": 7,
+            "SM-A530F": 7,
+            "SM-A530F": 7,
+            "Galaxy A8(2017)": 7,
+            "SM-A800IZ": 7,
+            "SM-A800IZ": 7,
+            SCV32: 7,
+            "SM-A800YZ": 7,
+            "SM-A800YZ": 7,
+            "SM-A800I": 7,
+            "SM-A800I": 7,
+            "SM-A800S": 7,
+            "SM-A800S": 7,
+            "SM-A8000": 7,
+            "SM-A8000": 7,
+            "SM-A800F": 7,
+            "SM-A800F": 7,
+            "SM-A730F": 7,
+            "SM-A730F": 7,
+            "SM-A305F": 7,
+            "SM-A305FN": 7,
+            "SM-A305G": 7,
+            "SM-A305GN": 7,
+            "SM-A505F": 7,
+            "SM-A505FN": 7,
+            "SM-A505GN": 7,
+            "SM-A505G": 7,
+            "SM-J530K": 7,
+            "Galaxy J5 (6)": 7,
+            "Galaxy J5(6)": 7,
+            "SM-J530S": 7,
+            "SM-J530S": 7,
+            "SM-J530F": 7,
+            "SM-J530F": 7,
+            "SM-J530FM": 7,
+            "SM-J530FM": 7,
+            "SM-J530Y": 7,
+            "SM-J530Y": 7,
+            "SM-J530GM": 7,
+            "SM-J530GM": 7,
+            "SM-J530YM": 7,
+            "SM-J530YM": 7,
+            "J5 Pro": 7,
+            "SM-J530G": 7,
+            "SM-J530G": 7,
+            "SM-J730K": 7,
+            "SM-J730K": 7,
+            "SM-J730FM": 7,
+            "SM-J730FM": 7,
+            "SM-J730F": 7,
+            "SM-J730F": 7,
+            "J7 Pro": 7,
+            "Galaxy J7 pro": 7,
+            "SM-J730GM": 7,
+            "SM-J730GM": 7,
+            "SM-J730G": 7,
+            "SM-J730G": 7,
+            "SM-J727U": 7,
+            "SM-J727U": 7,
+            "SM-J727A": 7,
+            "SM-J727A": 7,
+            "SM-J727R4": 7,
+            "SM-J727R4": 7,
+            "SM-J727": 7,
+            "SM-J727VPP": 7,
+            "SM-J727VPP": 7,
+            "SM-S727VL": 7,
+            "SM-S727VL": 7,
+            "SM-J727V": 7,
+            "SM-J727V": 7,
+            "SM-J730F": 7,
+            "SM-J730F": 7,
+            "Galaxy J7 pro": 7,
+            "J7 Pro": 7,
+            "SC-01K": 7,
+            SCV37: 7,
+            "SM-N950X": 7,
+            "SM-N950X": 7,
+            "SM-N9550": 7,
+            "galaxy note8": 7,
+            "Galaxy Note 8": 7,
+            "SM-N9550": 7,
+            N5200: 7,
+            "SM-N950U1": 7,
+            "SM-N950U1": 7,
+            "SM-N950N": 7,
+            "SM-N950N": 7,
+            "SM-N950FZKD": 7,
+            "SM-N950FZKA": 7,
+            "SM-N950UZKAAIO": 7,
+            "SM-N950UZSAATT": 7,
+            "SM-N950UZVATMK": 7,
+            "SM-N950UZVAATT": 7,
+            "SM-N950UZKAATT": 7,
+            "SM-N950UZKATMK": 7,
+            "SM-N950UZSATMK": 7,
+            "SM-N950UZKABST": 7,
+            "SM-N950UZKAACG": 7,
+            "SM-N950UZVASPR": 7,
+            "SM-N950UZSASPR": 7,
+            "SM-N950UZKASPR": 7,
+            "SM-N950UZVATMB": 7,
+            "SM-N950UZKATMB": 7,
+            "SM-N950UZSATMB": 7,
+            "SM-N950UZVAUSC": 7,
+            "SM-N950UZSAUSC": 7,
+            "SM-N950UZKAUSC": 7,
+            "SM-N950UZVATFN": 7,
+            "SM-N950UZSATFN": 7,
+            "SM-N950UZKATFN": 7,
+            "SM-N950UZVAVZW": 7,
+            "SM-N950UZSAVZW": 7,
+            "SM-N950UZKAVZW": 7,
+            "SM-N950UZKAVMU": 7,
+            "SM-N950UZKAXAA": 7,
+            "SM-N950U": 7,
+            "SM-N950U": 7,
+            "SM-N950": 7,
+            "SM-N950W": 7,
+            "SM-N950W": 7,
+            "SM-N9500": 7,
+            "SM-N9500": 7,
+            "SM-N9508": 7,
+            "SM-N9508": 7,
+            "SM-N950F": 7,
+            "SM-N950F": 7,
+            "SM-N950S": 7,
+            "SM-N950K": 7,
+            "SM-N950L": 7,
+            "SM-N950FD": 7,
+            "SM-N9600": 7,
+            "SM-N9600": 7,
+            "SM-N960N": 7,
+            "SM-N960N": 7,
+            "SM-N960F": 7,
+            "SM-N960F": 7,
+            "SM-N960U1": 7,
+            "SM-N960U1": 7,
+            "SM-N960W": 7,
+            "SM-N960W": 7,
+            "SM-N960U": 7,
+            "SM-N960U": 7,
+            "SM-G930": 7,
+            "SM-G930": 7,
+            "SM G930": 7,
+            "SM-G930VC": 7,
+            "SM-G930VC": 7,
+            S7: 7,
+            s7: 7,
+            S7: 7,
+            "SM-G930K": 7,
+            "SM-G930K": 7,
+            "SM-G930X": 7,
+            "SM-G930X": 7,
+            "SM-G930W8": 7,
+            "SM-G930W8": 7,
+            "SM-G930F": 7,
+            "SM-G930F": 7,
+            "SM-G930R4": 7,
+            "SM-G930R4": 7,
+            "SM-G930VL": 7,
+            "SM-G930VL": 7,
+            "SM-G930U": 7,
+            "SM-G930U": 7,
+            "SM-G930R": 7,
+            "SM-G930FD": 7,
+            "SM-G930FD": 7,
+            "SM_G930FD ": 7,
+            "SM-G9308": 7,
+            "SM-G9308": 7,
+            "SM-G930P": 7,
+            "SM-G930P": 7,
+            "SM-G930R7": 7,
+            "SM-G930R7": 7,
+            "SM-G930R6": 7,
+            "SM-G930R6": 7,
+            "SM-G930T1": 7,
+            "SM-G930T1": 7,
+            "SM-G930A": 7,
+            "SM-G930A": 7,
+            "SM-G930AZ": 7,
+            "SM-G930AZ": 7,
+            "SM-G930S": 7,
+            "SM-G930S": 7,
+            "SM-G930L": 7,
+            "SM-G930L": 7,
+            "SM-G9300": 7,
+            "SM-G9300": 7,
+            "SM-G930T": 7,
+            "SM-G930T": 7,
+            "SM-G935T": 7,
+            "SM-G935T": 7,
+            "SM-G935VC": 7,
+            "SM-G935VC": 7,
+            SCV33: 7,
+            "SM-G935F": 7,
+            "SM-G935F": 7,
+            "SM-G935K": 7,
+            "SM-G935K": 7,
+            "SM-G935X": 7,
+            "SM-G935X": 7,
+            "SM-G935R4": 7,
+            "SM-G935R4": 7,
+            "SM-G935U": 7,
+            "SM-G935U": 7,
+            "SM-G935J": 7,
+            "SM-G935FD": 7,
+            "SM-G935FD": 7,
+            "SM-G935D": 7,
+            "SM-G9359": 7,
+            "SM-G9358": 7,
+            "SM-G935P": 7,
+            "SM-G935P": 7,
+            "SM-G935R7": 7,
+            "SM-G935R6": 7,
+            "SM-G935T1": 7,
+            "SM-G935A": 7,
+            "SM-G935A": 7,
+            "SM-G935AZ": 7,
+            "SM-G935S": 7,
+            "SM-G935S": 7,
+            "SM-G935L": 7,
+            "SM-G935L": 7,
+            "SM-G9350": 7,
+            "SM-G9350": 7,
+            "SM-G935W8": 7,
+            "SM-G935W8": 7,
+            "SM-G980F": 7,
+            SCV36: 7,
+            "SM-G950U1": 7,
+            "SM-G950U1": 7,
+            "SM-G950N": 7,
+            "SM-G950N": 7,
+            "SM-G950": 7,
+            "GALAXY S8": 7,
+            "Galaxy-S8": 7,
+            GALAXY_S8: 7,
+            "SM-G950": 7,
+            "SM-G9508": 7,
+            "SM-G9508": 7,
+            "SM-G9509": 7,
+            "SM-G950FD": 7,
+            "SM-G950FD": 7,
+            "SM-G950K": 7,
+            "SM-G950K": 7,
+            "SM-G950L": 7,
+            "SM-G950P": 7,
+            "SM-G950R4": 7,
+            "SM-G950S": 7,
+            "SM-G950S": 7,
+            "SM-G950T": 7,
+            "SM-G950V": 7,
+            "SM-G950W8": 7,
+            "SM-G950W": 7,
+            "SM-G950W": 7,
+            "SM-G950U": 7,
+            "SM-G950U": 7,
+            "SM-G955F": 7,
+            "SM-G955F": 7,
+            "SM-G950F": 7,
+            "SM-G950F": 7,
+            "SM-G9500": 7,
+            "SM-G9500": 7,
+            "SM-G950X": 7,
+            "SM-G950X": 7,
+            "SM-G950A": 7,
+            SCV35: 7,
+            SCV35: 7,
+            "SM-G955U1": 7,
+            "SM-G955U1": 7,
+            "SM-G955N": 7,
+            "SM-G955N": 7,
+            "SM-G9558": 7,
+            "SM-G9559": 7,
+            "SM-G955A": 7,
+            "SM-G955A": 7,
+            "SM-G955L": 7,
+            "SM-G955P": 7,
+            "SM-G955R4": 7,
+            "SM-G955S": 7,
+            "SM-G955T": 7,
+            "SM-G955V": 7,
+            "SM-G955W8": 7,
+            "SM-G955W": 7,
+            "SM-G955W": 7,
+            "SM-G955U": 7,
+            "SM-G955U": 7,
+            "SM-G955K": 7,
+            "SM-G955FN": 7,
+            "SM-G955FD": 7,
+            "SM-G955FD": 7,
+            "SM-G955": 7,
+            "SM-G955": 7,
+            "SM-G9550": 7,
+            "SM-G9550": 7,
+            "SM-G955X": 7,
+            "SM-G955X": 7,
+            "GalaxyS8+": 7,
+            "GALAXY S8+": 7,
+            "SC-02K": 7,
+            SCV38: 7,
+            "SM-G960X": 7,
+            "SM-G960X": 7,
+            "SM-G960FZBABTU": 7,
+            "SM-G960FZVABTU": 7,
+            "SM-G960XU": 7,
+            "SM-G960XU": 7,
+            "SM-G960U": 7,
+            "SM-G960U": 7,
+            "SM-G960W": 7,
+            "SM-G960W": 7,
+            "SM-G960UZPAUSC": 7,
+            "SM-G960UZPAXAA": 7,
+            "SM-G960UZVATFN": 7,
+            "SM-G960UZVATMK": 7,
+            "SM-G960UZSATMK": 7,
+            "SM-G960UZPATMB": 7,
+            "SM-G960UZSATFN": 7,
+            "SM-G960UZPASPR": 7,
+            "SM-G960UZPAVZW": 7,
+            "SM-G960UZPAATT": 7,
+            "SM-G960UZKAXAA": 7,
+            "SM-G960UZKASPR": 7,
+            "SM-G960UZKABST": 7,
+            "SM-G960UZKAAIO": 7,
+            "SM-G960UZKAATT": 7,
+            "SM-G960UZBAXAA": 7,
+            "SM-G960UZKAACG": 7,
+            "SM-G960UZBAVZW": 7,
+            "SM-G960UZBAUSC": 7,
+            "SM-G960UZBATMB": 7,
+            "SM-G960UZBAATT": 7,
+            "SM-G960UZBASPR": 7,
+            "SM-G960U1": 7,
+            "SM-G960U1": 7,
+            "SM-G960FZSABTU": 7,
+            "SM-G960N": 7,
+            "SM-G960N": 7,
+            "SM-G960FZKABTU": 7,
+            "SM-G9608": 7,
+            "SM-G960F": 7,
+            "SM-G960F": 7,
+            "SM-G960FD": 7,
+            "SM-G960": 7,
+            "SM-G9600": 7,
+            "SM-G9600": 7,
+            "SM-G960UZKATFN": 7,
+            "SM-G960UZKATMB": 7,
+            "SM-G960UZKATMK": 7,
+            "SM-G960UZKAUSC": 7,
+            "SM-G960UZKAVMU": 7,
+            "SM-G960UZKAVZW": 7,
+            "SC-03K": 7,
+            "SM-G965X": 7,
+            "SM-G965X": 7,
+            SCV39: 7,
+            "SM-G965U": 7,
+            "SM-G965U": 7,
+            "SM-G965UZPAUSC": 7,
+            "SM-G965XU": 7,
+            "SM-G965UZVATFN": 7,
+            "SM-G965UZVATMK": 7,
+            "SM-G965UZSATMK": 7,
+            "SM-G965UZPAXAA": 7,
+            "SM-G965UZSATFN": 7,
+            "SM-G965UZPAVZW": 7,
+            "SM-G965UZPATMB": 7,
+            "SM-G965UZPAATT": 7,
+            "SM-G965UZPASPR": 7,
+            "SM-G965UZKAVZW": 7,
+            "SM-G965UZKAXAA": 7,
+            "SM-G965UZKATFN": 7,
+            "SM-G965UZKAVMU": 7,
+            "SM-G965UZKATMK": 7,
+            "SM-G965UZKAUSC": 7,
+            "SM-G965UZKATMB": 7,
+            "SM-G965UZKASPR": 7,
+            "SM-G965UZKABST": 7,
+            "SM-G965UZKAAIO": 7,
+            "SM-G965UZKAATT": 7,
+            "SM-G965UZBAXAA": 7,
+            "SM-G965UZKAACG": 7,
+            "SM-G965UZBATMB": 7,
+            "SM-G965UZBAVZW": 7,
+            "SM-G965UZBAUSC": 7,
+            "SM-G965U1": 7,
+            "SM-G965U1": 7,
+            "SM-G965UZBAATT": 7,
+            "SM-G965UZBASPR": 7,
+            "SM-G965FZSABTU": 7,
+            "SM-G9650": 7,
+            "SM-G9650": 7,
+            "SM-G965F": 7,
+            "SM-G965F": 7,
+            "SM-G9658": 7,
+            "SM-G965FZBABTU": 7,
+            "SM-G965FZKABTU": 7,
+            "SM-G965FZKDXEU": 7,
+            "SM-G965FZVABTU": 7,
+            "SM-G965FZVDXEU": 7,
+            "SM-G965N": 7,
+            "sm-g965n": 7,
+            "SM-G965W": 7,
+            "sm-g965w": 7,
+            "SM-G965FD": 7,
+            "SM-G965": 7,
+            "SM-G970F": 7,
+            "SM-G970U": 7,
+            "SM-G970W": 7,
+            "SM-G9700": 7,
+            "SM-G970U1": 7,
+            "SAMSUNG-S10": 7,
+            Samsung_S10: 7,
+            samsungs10: 7,
+            "GT-Samsung S10 ": 7,
+            s10: 7,
+            "SM-G973F": 7,
+            "SM-G973U": 7,
+            "SM-G973W": 7,
+            "SM-G973U1": 7,
+            "SM-G975F": 7,
+            "SM-G975U": 7,
+            "SM-G975W": 7,
+            "SM-G975U1": 7,
+            "SM-G9750": 7,
+            "SM-G979U": 7,
+            "SM-G979N": 7,
+            "SM-T825C": 7,
+            "SM-T825C": 7,
+            "SM-T827R4": 7,
+            "SM-T827R4": 7,
+            "SM-T825": 7,
+            "SM-T825": 7,
+            "SM-T820": 7,
+            "SM-T820": 7,
+            "SM-T825N0": 7,
+            "SM-T825N0": 7,
+            "SM-T827V": 7,
+            "SM-T827V": 7,
+            "SM-T825Y": 7,
+            "SM-T825Y": 7,
+            "SM-T835": 7,
+            "SM-T835": 7,
+            "SM-T830": 7,
+            "SM-T725": 7
+        },
+        Sony: {
+            "SO-04J": 8,
+            G8141: 8,
+            G8142: 8,
+            "Xperia XZ Premium": 8,
+            "XZ Premium": 8,
+            "701SO": 8,
+            SOV36: 8,
+            G8343: 8,
+            G8341: 8,
+            G8342: 8,
+            "SO-02K": 8,
+            "Sony SO-02K": 8,
+            G8441: 8,
+            "702SO": 8,
+            H8276: 8,
+            SOV37: 8,
+            H8296: 8,
+            "SO-03K": 8,
+            H8314: 8,
+            H8116: 8,
+            H9436: 7
+        },
+        Vivo: {
+            "NEX S": 7,
+            1805: 7
+        },
+        Xiaomi: {
+            8: 7,
+            "8 SE": 7,
+            "MIX 2S": 7,
+            "MIX 3": 7,
+            "MIX 3": 7,
+            "POCOPHONE F1 ": 7,
+            "POCOPHONE F1 ": 7
+        },
+        Zepra: {
+            TC52: 7,
+            TC57: 7,
+            TC72: 7,
+            TC77: 7
+        },
+        Apple: {}
+    }
+};
+
+threedfw.flixCheckARcompatibility = function(uastring) {
+    log4("flixCheckARcompatibility");
+    if (uastring) flixarparser.setUA(uastring);
+    var browser = flixarparser.getBrowser();
+    var engine = flixarparser.getEngine();
+    var os = flixarparser.getOS();
+    var device = flixarparser.getDevice();
+    var osver = os.version.split(".");
+    var osversion = osver[0] * 1;
+    //overwrites for ios 13 - Update os.name and osversion
+            if (navigator.userAgent.match(/Intel Mac OS X/i)) {
+        log4("ios 13 overwrite");
+        //name OS into iOS
+                    os.name = "iOS";
+        //update version            
+                    osversion = 13;
+    }
+    if (location.href.search("flix-ar=1") != -1) {
+        log4("Force AR");
+        return true;
+    }
+    /*if(os.name.search('Android')!=-1 && osversion<7){
+        log4('Android <7')
+        return false;
+    }*/
+    //this rule to fix errors android error for some of the phones
+     else if (os.name.search("Android") != -1 && osversion < 7) {
+        log4("Android <7");
+        return false;
+    } else if (os.name.search("Android") != -1 && osversion >= 9) {
+        log4("Android >9");
+        return true;
+    } else if (os.name.search("iOS") != -1 && osversion < 11) {
+        log4("iOS<11");
+        return false;
+    } else if (os.name.search("iOS") != -1 && osversion >= 11) {
+        log4("iPhone");
+        // Create a canvas element which can be used to retrieve information about the GPU.
+                    var canvas = document.createElement("canvas");
+        if (canvas) {
+            var context = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+            if (context) {
+                var info = context.getExtension("WEBGL_debug_renderer_info");
+                if (info) {
+                    var renderer = context.getParameter(info.UNMASKED_RENDERER_WEBGL);
+                }
+            }
+        }
+        log4(window.screen.height + "__" + window.screen.width + "__" + window.devicePixelRatio + "__" + renderer);
+        // iPhone XR, iPhone XS Max
+                    var ratio = window.devicePixelRatio;
+        if (window.screen.height / window.screen.width == 896 / 414) {
+            log4("iPhone XR, iPhone XS Max, iphone 11 , iphone 11 pro max");
+            switch (ratio) {
+              default:
+                return true;
+
+              case 2:
+                return true;
+
+              case 3:
+                return true;
+            }
+        }
+        // iPhone X
+         else if (window.screen.height / window.screen.width == 812 / 375 && window.devicePixelRatio == 3) {
+            log4("iPhone X");
+            return true;
+        } // iPhone Xs max, iphone 11 , iphone 11 pro max
+         else if (window.screen.height / window.screen.width == 896 / 414 && window.devicePixelRatio == 3) {
+            log4("iPhone Xs max, iphone 11 , iphone 11 pro max");
+            return true;
+            // iPhone 11
+                    } else if (window.screen.height / window.screen.width == 812 / 375 && window.devicePixelRatio == 3) {
+            log4("iphone 11 pro");
+            return true;
+            // iPhone 6+/6s+/7+ and 8+
+                    } else if (window.screen.height / window.screen.width == 736 / 414 && window.devicePixelRatio == 3) {
+            log4("iPhone 6+/6s+/7+ and 8+");
+            switch (renderer) {
+              default:
+                return true;
+
+              case "Apple A8 GPU":
+                return false;
+
+              case "Apple A9 GPU":
+                return true;
+
+              case "Apple A10 GPU":
+                return true;
+
+              case "Apple A11 GPU":
+                return true;
+
+              case "Apple A12 GPU":
+                return true;
+            }
+            // iPhone 6+/6s+/7+ and 8+ in zoom mode
+                    } else if (window.screen.height / window.screen.width == 667 / 375 && window.devicePixelRatio == 3) {
+            log4("iPhone 6+/6s+/7+ and 8+ in zoom mode");
+            switch (renderer) {
+              default:
+                return true;
+
+              case "Apple A8 GPU":
+                return false;
+
+              case "Apple A9 GPU":
+                return true;
+
+              case "Apple A10 GPU":
+                return true;
+
+              case "Apple A11 GPU":
+                return true;
+
+              case "Apple A12 GPU":
+                return true;
+            }
+            // iPhone 6/6s/7 and 8
+                    } else if (window.screen.height / window.screen.width == 667 / 375 && window.devicePixelRatio == 2) {
+            log4("iPhone 6/6s/7 and 8");
+            switch (renderer) {
+              default:
+                return true;
+
+              case "Apple A8 GPU":
+                return false;
+
+              case "Apple A9 GPU":
+                return true;
+
+              case "Apple A10 GPU":
+                return true;
+
+              case "Apple A11 GPU":
+                return true;
+
+              case "Apple A12 GPU":
+                return true;
+            }
+            // iPhone 5/5C/5s/SE or 6/6s/7 and 8 in zoom mode
+                    } else if (window.screen.height / window.screen.width == 1.775 && window.devicePixelRatio == 2) {
+            log4("iPhone 5/5C/5s/SE or 6/6s/7 and 8 in zoom mode");
+            switch (renderer) {
+              default:
+                return true;
+
+              case "PowerVR SGX 543":
+                return false;
+
+              case "Apple A7 GPU":
+                return false;
+
+              case "Apple A8 GPU":
+                return false;
+
+              case "Apple A9 GPU":
+                return true;
+
+              case "Apple A10 GPU":
+                return true;
+
+              case "Apple A11 GPU":
+                return true;
+
+              case "Apple A12 GPU":
+                return true;
+            }
+            // iPhone 4/4s
+                    } else if (window.screen.height / window.screen.width == 1.5 && window.devicePixelRatio == 2) {
+            log4("iPhone 4/4s");
+            return false;
+            // iPhone 1/3G/3GS
+                    } else if (window.screen.height / window.screen.width == 1.5 && window.devicePixelRatio == 1) {
+            log4("iPhone 1/3G/3GS");
+            return false;
+        } else if (window.screen.height / window.screen.width == 1024 / 768) {
+            // iPad, iPad 2, iPad Mini
+            if (window.devicePixelRatio == 1) {
+                log4("iPad, iPad 2, iPad Mini");
+                return false;
+                // iPad 3, 4, 5, Mini 2, Mini 3, Mini 4, Air, Air 2
+                            } else {
+                log4("iPad 3, 4, 5, Mini 2, Mini 3, Mini 4, Air, Air 2-----");
+                if (renderer.indexOf("PowerVR SGX 543") != -1) {
+                    log4(renderer);
+                    return false;
+                } else if (renderer.indexOf("PowerVR SGX 554") != -1) {
+                    log4(renderer);
+                    return false;
+                } else if (renderer.indexOf("Apple A7 GPU") != -1) {
+                    log4(renderer);
+                    return false;
+                } else if (renderer.indexOf("Apple A8X GPU") != -1) {
+                    log4(renderer);
+                    return false;
+                } else if (renderer.indexOf("Apple A8 GPU") != -1) {
+                    log4(renderer);
+                    return false;
+                } else if (renderer.indexOf("Apple A9 GPU") != -1) {
+                    log4(renderer);
+                    return true;
+                } else if (renderer.indexOf("Apple A9X GPU") != -1) {
+                    log4(renderer);
+                    return true;
+                } else if (renderer.indexOf("Apple A10 GPU") != -1) {
+                    log4(renderer);
+                    return true;
+                } else {
+                    return true;
+                }
+            }
+            // iPad Pro 10.5
+                    } else if (window.screen.height / window.screen.width == 1112 / 834) {
+            log4("iPad Pro 10.5");
+            return true;
+            // iPad Pro 12.9, Pro 12.9 (2nd Gen)
+                    } else if (window.screen.height / window.screen.width == 1366 / 1024) {
+            log4("iPad Pro 12.9, Pro 12.9 (2nd Gen)");
+            return true;
+        } else if (window.screen.height / window.screen.width == 1194 / 834) {
+            log4("iPad Pro 11 2018");
+            return true;
+        }else if (window.screen.height / window.screen.width == 844 / 390) {
+            log4('iPhone 12/iPhone 12 Pro');
+            return true;
+        } else if (window.screen.height / window.screen.width == 780 / 360) {
+            log4('iPhone 12 Mini');
+            return true;
+        }
+        else if (window.screen.height / window.screen.width == 926 / 428) {
+            log4('iPhone 12 Pro Max');
+            return true;
+        }
+        else{
+            log4('iPhone/iPad old model  ')
+            return false;
+        }
+    } else if (os.name.search("iOS") == -1 && os.name.search("Android") == -1) {
+        log4("Not iOS or Android");
+        //not mobile
+                    return false;
+    } else {
+        log4("Other no brand");
+        if (device.vendor == "LGM") device.vendor = "LG";
+        if (location.href.search("flix-2qa") != -1) {
+            log4(device.vendor + "__" + device.model + "__" + osversion);
+        }
+        var found = 0;
+        //log4(flixAllowedModel.brand[device.vendor][device.model]);
+                    if (typeof device.vendor == "undefined") {
+            var useragent = navigator.userAgent.split(";");
+            if (location.href.search("flix-2qa") != -1) {
+                log4(useragent);
+            }
+            var model = useragent[2].split(" Build");
+            if (location.href.search("flix-2qa") != -1) {
+                log4(model[0]);
+            }
+            FlixjQ.each(flixAllowedModel.brand, function(index, element) {
+                FlixjQ.each(element, function(index2, element2) {
+                    if (model[0].toLowerCase().indexOf(index2.toLowerCase()) != -1) {
+                        if (location.href.search("flix-2qa") != -1) {
+                            log4("Model in list" + index2);
+                        }
+                        found = 1;
+                        return true;
+                    }
+                });
+            });
+        } else {
+            log4("Other - check mobile clist: ", device.model);
+            var isittrue = false;
+            FlixjQ.each(flixAllowedModel.brand[device.vendor], function(index, element) {
+                if (location.href.search("flix-2qa") != -1) {
+                    log4(osversion + "__" + element);
+                    log4(device.model.toLowerCase() + "__" + index.toLowerCase());
+                }
+                if (device.model.toLowerCase().search(index.toLowerCase()) != -1) {
+                    if (location.href.search("flix-2qa") != -1) {
+                        log4("Model in list" + index);
+                    }
+                    if (osversion >= element) {
+                        if (location.href.search("flix-2qa") != -1) {
+                            log4("Phone is AR compatible");
+                        }
+                        found = 1;
+                        isittrue = true;
+                        return true;
+                    } else {
+                        if (location.href.search("flix-2qa") != -1) {
+                            log4("Low OS: " + element + " < " + osversion);
+                        }
+                        isittrue = false;
+                        return false;
+                    }
+                }
+            });
+            if (isittrue == true) {
+                log4("Other - isittrue");
+                return true;
+            } else {
+                log4("Other - No match");
+                return false;
+            }
+        }
+        if (found == 0) {
+            log4("No phone model");
+            return false;
+        }
+        /*if(flixAllowedModel.brand[device.vendor][device.model]){
+            return true;
+        }else{
+            return false;
+        }*/
+        //data.retailers[productid]
+        //return [os.name , device.vendor , device.model , os.name+os.version]
+            }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+(function($) {
+    
+    threedfw.check3dfwvisibility = function(gltdid) {
+        var elementTop = FlixjQ(gltdid).offset().top-200;
+        var elementBottom = elementTop + FlixjQ(gltdid).height();
+        var viewportTop = FlixjQ(window).scrollTop();
+        var viewportBottom = viewportTop + FlixjQ(window).height();
+        if(elementBottom<0)
+            return true
+        return elementBottom > viewportTop && elementTop < viewportBottom;
+    };
+
+    threedfw.init3dfw=function(this3dfw){
+        //log4('init3dfw');
+
+        var fwurl=this3dfw.attr('data-fwurl');
+        var Tempfwurl=this3dfw.attr('data-fwurl');
+
+        if(location.href.search('&live=0')!=-1){
+            fwurl=fwurl.replace('media.flixfacts.com/3d/3dfw/', 'dev-delivery.flix360.com/delivery/static/3dfw/eky/public/index.html')
+        }
+        if(location.href.search('&webarlive=0')!=-1 || location.href.search('&3dfwlive=0')!=-1){
+            fwurl=fwurl.replace('d3nkfb7815bs43.cloudfront.net', 'stage-eyekandyplayer.herokuapp.com');      
+        }        
+
+        //no tracking retailer - remove parameters p and d - keep language
+        if (typeof FlixjQ.fn.logging!='undefined' && typeof FlixjQ.fn.logging.noTracking!='undefined' && FlixjQ.fn.logging.noTracking==true) {
+            fwurl=fwurl.replace('&p=','&p-no=')
+            fwurl=fwurl.replace('&d=','&d-no=')
+        }
+        if (fwurl.search('null')!=-1) {
+            fwurl=fwurl.replace(/null/g, '');
+        }
+        
+        if(this3dfw.attr('data-fwurl').search('&showWebarButton=Y')!=-1){
+            fwurl+='&showWebarButton=Y'
+        }
+
+        var customWebarDistributors=['&d=75&','&d=184&','&d=664&','&d=7416&','&d=219&','&d=16295&','&d=353&','&d=179&','&d=620&','&d=4150&','&d=78&','&d=6555&','&d=13055&','&d-no=205&','&d-no=4904&','&d=5840&'];
+        for (var i = 0; i < customWebarDistributors.length; i++) {
+            if(fwurl.indexOf(customWebarDistributors[i]) > -1) {
+               fwurl+='&disticon=y'
+            }
+        }
+
+         /* HP new webar */
+         if(this3dfw.attr('data-fwurl').search('d=16035')!=-1){
+            fwurl=fwurl.replace('&showWebarButton=N','')
+            fwurl+='&showWebarButton=Y'
+            fwurl+='&disticon=y'
+        }
+
+        var HpDistributors=['&d=16422&','&d=16423&','&d=16424&','&d=16425&','&d=16426&','&d=16427&','&d=16428&','&d=16591&','&d=16592&'];
+
+        for (var i = 0; i < HpDistributors.length; i++) {
+            if(Tempfwurl.indexOf(HpDistributors[i]) > -1) {
+                fwurl=fwurl.replace('&showWebarButton=N','')
+                fwurl+='&showWebarButton=Y'
+                fwurl+='&disticon=y'
+            }
+        }
+        
+        var topurl=(window.location != window.parent.location)? document.referrer : document.location.href;
+
+            topurl=topurl.replace(/&/g, '|and');
+            topurl=topurl.replace(/\/\//g, '|for');
+            topurl=topurl.replace(/\?/g, '|que');
+            topurl=topurl.replace(/\:/g, '|dub');
+            topurl=topurl.replace(/\=/g, '|is');
+            topurl=topurl.replace(/\#/g, '|hash');
+            topurl=topurl.replace(/\%/g, '|per');
+            fwurl+='&pn='+topurl;
+
+        var sid=''
+        if(typeof FlixjQ.fn.inPage!='undefined')
+            sid=FlixjQ.fn.inPage.data.session_id
+        if(typeof FlixjQ.fn.hideMinisite!='undefined')
+            sid=FlixjQ.fn.hideMinisite.data.session_id
+
+        fwurl+='&sid='+sid;
+
+
+        if(FlixjQ('#flix-mbl-page').length>0)
+            fwurl+='&mot=1'
+        if(FlixjQ.fn.logging && FlixjQ.fn.logging.trackingDomain)
+            fwurl +='&base='+FlixjQ.fn.logging.trackingDomain
+
+        var fwcss='#flix_selector_3d.flix-3d-fw-hotspot{max-width:1000px;}div#flix_selector_3d div#flix-3dfwcontainer{display:none;height:0;margin:10px 0 0px 0;padding-bottom:76.25%;position:relative;overflow-y:hidden;-webkit-overflow-scrolling:touch!important;width:100%}div#flix_selector_3d iframe#flix-3dfwiframe{border:0;height:100%;left:0;min-width:100%;max-width:100%;position:absolute;overflow:hidden;top:0;width:100%;width:1px;min-width:100%}@media(max-width:600px){#flix_selector_3d #flix-3dfwcontainer{margin:0}}'
+
+        //moves the &showqrpopup=1 at the end
+        if(fwurl.search('&showqrpopup=1')!=-1){
+            fwurl=fwurl.replace('&showqrpopup=1','')
+            fwurl=fwurl+'&showqrpopup=1'
+        }
+
+        if(fwurl.search('gvid')==-1){
+            var gvid
+            if(typeof FlixjQ.fn.inPage!='undefined' && FlixjQ.fn.inPage.data.gvid)
+                gvid=FlixjQ.fn.inPage.data.gvid;
+            if(typeof FlixjQ.fn.minisite!='undefined' && FlixjQ.fn.minisite.data.gvid)
+                gvid=FlixjQ.fn.minisite.data.gvid;
+            if(typeof flixhotspot!='undefined' && typeof flixhotspot.data!='undefined')
+                gvid=flixhotspot.data.gvid;
+            fwurl=fwurl+'&gvid='+gvid;
+        }
+
+        var lan=threedfw.flixGetUrlParameter('l', fwurl)
+        if(fwurl.search('d3np41mctoibfu')==-1){
+            var newlan=threedfw.flixCheckIso(lan) || lan
+            fwurl=fwurl.replace('l='+lan, 'l='+newlan)
+        }
+        
+        if( typeof flixhotspot!='undefined' && typeof flixhotspot.data!='undefined' &&  typeof flixhotspot.data.ab_data!='undefined' && typeof flixhotspot.data.ab_data['cookie']!='undefined' && flixhotspot.data.ab_data.expire !== 'expired') {
+            fwurl +="&ab="+flixhotspot.data.ab_data.tst_id+"&abr="+flixhotspot.data.ab_data.resource_ref+"&abid="+flixhotspot.data.ab_data['cookie'].abid;      
+        }
+
+        if (location.protocol == "http:") {
+            fwurl=fwurl.replace('https', 'http')
+        }
+        
+        var css = FlixjQ("<span />", {
+            html: '&shy;<style>' + fwcss + '</style>'
+          }).appendTo("#flix-3dfwcontainer");
+
+        var fwiframe='<iframe id="flix-3dfwiframe" src="'+fwurl+'" scrolling="no" allowfullscreen="true" ></iframe>'
+
+        if(!this3dfw.parent().find('#flix-3dfwiframe').length){
+
+            this3dfw.after(fwiframe).show();
+            this3dfw.parent().show()
+        }
+
+    }
+
+
+    threedfw.flixGetUrlParameter = function (sParam,inputurl) {
+        inputurl=inputurl.split('?')
+        
+        var
+            url=inputurl[1]
+            ,   sPageURL=decodeURIComponent(url)
+            ,   sURLVariables=sPageURL.split('&')
+            ,   sParameterName
+            ,   i
+        ;
+
+        for (i=0; i < sURLVariables.length; i++) {
+            sParameterName=sURLVariables[i].split('=');
+            if (sParameterName[0]===sParam) {
+                return sParameterName[1]===undefined ? true : sParameterName[1];
+            }
+        }
+    };
+    //change language to main 
+    threedfw.flixCheckIso= function(language_to_search){
+        
+        var languages = {
+            'ar': ['ar','a1','ae',],
+            'de': ['de','at','l1','s4'],
+            'dk': ['dk'],
+            'en': ['en','au','ap','c1','b1','d7','b5','e9','c5','e8','c6','d9','eg','t5','eu','d4','d5','gh','d1','d8','c7','e1','in','e2','ie','e3','c8','j1','ke','e4','k1','t1','l3','b3','m1','nz','c9','ng','o1','pk','p1','e5','f9','q1','d3','d2','b7','za','s7','b8','b9','e6','t4','u1','us','d6','e7','bg', 'cz', 'lv', 'lt', 'id', 'kw', 'lb'],
+            'es': ['f4','bo','cl','f5','ec','f8','gu','hn','jm','t2','mx','ni','pa','py','pe','f7','tt','uy','f6', 'cr'],
+            'fi': ['fi'],
+            'fr': ['fr','b4','c4','l2','ma','s5'],
+            'hu': ['hu'],
+            'it': ['it','s6'],
+            'nl': ['nl','be'],
+            'no': ['no'],
+            'pt': ['pt','br'],
+            'pl': ['pl'],
+            'ro': ['ro'],
+            'rs': ['rs'],
+            'ru': ['ru'],
+            'sk': ['sk'],
+            'sv': ['sv'],
+            'tr': ['tr'],
+            'zh': ['zh','hk','tw',]
+        };
+
+        //missing languages
+        // al= albanian
+        // il = hebrew lan
+        // rs = serbian
+        
+
+        var found_iso_code = '';
+        for (var iso_code in languages) {
+            if(iso_code === language_to_search || languages[iso_code].indexOf(language_to_search) > -1) {
+                found_iso_code = iso_code;
+                //will never be called - have to use for/of! or just for loop.
+                break;
+            }
+        }
+        
+        return found_iso_code
+    }
+
+    threedfw.flixDetectWebGLContext=function(){
+
+        // Create canvas element. The canvas is not added to the
+        // document itself, so it is never displayed in the
+        // browser window.
+        var canvas = document.createElement("canvas");
+        // Get WebGLRenderingContext from canvas element.
+        var gl = canvas.getContext("webgl")
+            || canvas.getContext("experimental-webgl");
+        // Report the result.
+        if (gl && gl instanceof WebGLRenderingContext) {
+            //console.log("Your browser supports WebGL.")
+            if(!!window.MSInputMethodContext && !!document.documentMode){
+                  //IE11 detected
+                  console.log("This application does not work on IE11 as it requires more recent webGL.");
+                  if(location.href.search('minisite/')!=-1) threedfw.hideMinisite();
+                  return false;
+            }else{
+                  return true;
+            }
+        } else {
+            console.log("Failed to get WebGL context. Your browser or device may not support WebGL.")
+
+            //hide minisite tab
+            if(location.href.search('minisite/')!=-1)
+                threedfw.hideMinisite();
+
+            return false
+        }
+    }
+
+    threedfw.find3dfw=function(){
+        FlixjQ('input#flix-3dfwsrc').each(function(i){
+            var this3dfw=FlixjQ(this)
+            var fwvisible= threedfw.check3dfwvisibility(this3dfw.parent().parent())
+
+            if(fwvisible==true && this3dfw.parent().find('#flix-3dfwiframe').length==0){
+                threedfw.init3dfw(this3dfw);
+            }
+        });
+    }
+
+    threedfw.hideMinisite=function(){
+        var three3index=FlixjQ('#flix-3dfwcontainer').closest('.ui-tabs-panel').index()-1;
+        FlixjQ('.ui-tabs-nav li:eq('+three3index+')').hide()
+        if(three3index==0 && FLixjQ('.ui-tabs-nav li').length>1){
+            FlixjQ('.ui-tabs-panel:eq(0)').hide()
+            FlixjQ('.ui-tabs-panel:eq(1)').show()
+        }
+
+        FlixjQ('.inpage_selector_3d_fw').hide();
+    }
+
+    threedfw.flixisMobile = {
+        Android: function() {
+            return navigator.userAgent.match(/Android/i);
+        },
+        BlackBerry: function() {
+            return navigator.userAgent.match(/BlackBerry/i);
+        },
+        iOS: function() {
+            //added Intel Mac OS X to detect ios13 ipads
+            return navigator.userAgent.match(/iPhone|iPad|iPod|Intel Mac OS X/i);
+        },
+        Opera: function() {
+            return navigator.userAgent.match(/Opera Mini/i);
+        },
+        Windows: function() {
+            return navigator.userAgent.match(/IEMobile/i);
+        },
+        any: function() {
+            return threedfw.flixisMobile.Android() || threedfw.flixisMobile.BlackBerry() || threedfw.flixisMobile.iOS() || threedfw.flixisMobile.Opera() || threedfw.flixisMobile.Windows();
+        }
+    };
+
+    FlixjQ(document).ready(function(){
+        if(threedfw.flixDetectWebGLContext()){
+
+
+
+            FlixjQ(window).scroll(function() {
+                threedfw.find3dfw();
+            });
+            FlixjQ('body').bind('touchmove', function(e) {
+                threedfw.find3dfw();
+            });
+
+
+            threedfw.find3dfw();
+            if(typeof FlixjQ.fn.on=='undefined')
+                FlixjQ.fn.on=FlixjQ.fn.live;
+            FlixjQ(document).on('click', '#flix_product_view3dfw, #flix_desktop_webar', function(){
+
+                var wait3DFW = setInterval(int3DFW, 500);
+
+                function int3DFW() {
+
+                    if(FlixjQ('.share-bubble #flix-3dfwsrc').length){
+                        FlixjQ('.share-bubble #flix-3dfwsrc').parent().show();
+                        threedfw.find3dfw();
+                        clearInterval(wait3DFW);
+                    }
+                }
+            })
+
+        }
+    
+
+        trackingDomain='//media.flixcar.com/delivery/'
+        if(typeof FlixjQ!='undefined' && typeof FlixjQ.fn.inPage!='undefined' && typeof FlixjQ.fn.inPage.urlMain!='undefined')
+            trackingDomain=FlixjQ.fn.inPage.urlMain;
+        if(typeof FlixjQ!='undefined' && typeof FlixjQ.fn.minisite!='undefined' && typeof FlixjQ.fn.minisite.urlMain!='undefined')
+            trackingDomain=FlixjQ.fn.minisite.urlMain;
+
+        threedfw.threedfwopts= {};
+        if(typeof FlixjQ.fn.inPage!='undefined' && typeof FlixjQ.fn.inPage.data!='undefined')
+            threedfw.threedfwopts= FlixjQ.fn.inPage.data;
+        if(typeof FlixjQ.fn.minisite!='undefined' && typeof FlixjQ.fn.minisite.data!='undefined')
+            threedfw.threedfwopts= FlixjQ.fn.minisite.data;
+                
+        loadComp(trackingDomain+"/static/3dfw/css/3dfw.css");
+        
+        var start3dfwcc=0
+        threedfw.start3dfw=function(){
+            start3dfwcc++;
+            log4('start3dfw')
+
+            if(FlixjQ('#flix-3dfwsection').length || FlixjQ('#flix-3dfwiframe').length){
+
+                if(typeof FlixjQ.fn.inPage!='undefined' && typeof FlixjQ.fn.inPage.data!='undefined')
+                    threedfw.threedfwopts= FlixjQ.fn.inPage.data;
+                if(typeof FlixjQ.fn.minisite!='undefined' && typeof FlixjQ.fn.minisite.data!='undefined')
+                    threedfw.threedfwopts= FlixjQ.fn.minisite.data;
+
+
+                if(threedfw.flixisMobile.any()){
+                    
+                    if(threedfw.flixCheckARcompatibility()==true && threedfw.flixDetectWebGLContext()==true && FlixjQ('#flix-3dfwsection .flix-3dfw-aricon').length==0){
+
+                        FlixjQ('.flix-3dfw-desktop').hide();
+                        FlixjQ('.flix-3dfw-lb-1').hide();
+
+                        setTimeout(function(){
+                            FlixjQ('.flix-3dfw-mobile').show();
+                        }, 100);
+                        setTimeout(function(){
+                            FlixjQ('.flix-3dfw-mobile').show().addClass('flix-3dfw-mblshow');
+                        }, 1000);
+
+                        var arid=FlixjQ('.flix-3dfw-360').attr('data-arid');   
+                        var pp='<div class="eky_ar_btn eky_ar_btn_anim eky_ar_icon"><img src="'+trackingDomain +'/static/3dfw/img/tap-icon.png" alt="WebAR" /></div>'
+
+                        if (threedfw.flixisMobile.iOS() != null) {
+                            log4('WEBARhotspot  - ios-'+arid);
+                            var arhtml = '<a rel="ar" class="flix-3dfw-aricon flix-3dfw-ios "  data-eklink="hotspot_webar" href="https://d3np41mctoibfu.cloudfront.net/p/assets/' + arid + '.usdz"><img class="flix-iosarimg" src="'+trackingDomain +'/static/3dfw/img/tap-icon.png" style="opacity:0!important;height:1px!important;float: left!important;margin: 0!important;padding:0!important;position: absolute;" /><div>'+pp+'</div></a>';
+                            
+                            FlixjQ('.flix-3dfw-mobile .flix-3dfw-qr img').replaceWith(arhtml);     
+
+                            FlixjQ(".flix-3dfw-mobile .flix-3dfw-aricon").click(function(e) {
+                                e.stopPropagation();
+                                if(threedfw.threedfwopts.distributor!='7109')
+                                    FlixjQ.fn.logging('3dfw', 'webar_click', threedfw.threedfwopts, ''); 
+                                if(typeof flixtracking!='undefined')
+                                    flixtracking.logging('3dfw', 'webar_click', threedfw.threedfwopts, ''); 
+
+                                threedfw.arlaunchtimer();
+                                threedfw.ardwelltimer();
+
+                            });
+                            
+                        } else if (threedfw.flixisMobile.Android() != null) {
+                            log4('WEBARhotspot  - Android-'+arid);
+                            var uri = window.location.href;
+                            if (location.href.search("#") != -1) 
+                                uri = window.location.href.substr(0, window.location.href.indexOf("#"));
+                            
+                            arhtml = '<a class="flix-3dfw-aricon flix-3dfw-android"  data-eklink="hotspot_webar" href="intent://arvr.google.com/scene-viewer/1.0?file=https://d3np41mctoibfu.cloudfront.net/p/assets/' + arid + ".glb?link=" + encodeURIComponent(uri) + "&title=#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=" + encodeURIComponent(uri) + '%23model-viewer-no-ar-fallback;end;" >'+pp+'</a>';
+                            FlixjQ('.flix-3dfw-mobile .flix-3dfw-qr img').replaceWith(arhtml);   
+
+                            FlixjQ(".flix-3dfw-mobile .flix-3dfw-aricon").click(function(e) {
+                                if(threedfw.threedfwopts.distributor!='7109')
+                                    FlixjQ.fn.logging('3dfw', 'webar_click', threedfw.threedfwopts, ''); 
+                                if(typeof flixtracking!='undefined')
+                                    flixtracking.logging('3dfw', 'webar_click', threedfw.threedfwopts, ''); 
+
+                                threedfw.arlaunchtimer();
+                                threedfw.ardwelltimer();
+                            });  
+                        }
+                                   
+                    }
+                }
+
+                //FlixjQ('.inpage_selector_3d_fw').not('.inpage_selector_3d_fw_v2').remove()
+                
+                FlixjQ('.flix-3dfw-desktop .flix-3dfw-qr, .flix-3dfw-mobile .flix-3dfw-qr .flix-3dfw-360text').unbind('click').on('click', function(){           
+                    log4('.flix-3dfw-qr');
+                    FlixjQ('.flix-3dfw-lighbox').show();
+
+                    if(typeof FlixjQ.fn.logging!='undefined' && Object.keys(threedfw.threedfwopts).length!=0){
+                        if(threedfw.threedfwopts.distributor!='7109')
+                            FlixjQ.fn.logging('3dfw', 'media', threedfw.threedfwopts, 'howto_open'); 
+                        if(typeof flixtracking!='undefined' && Object.keys(threedfw.threedfwopts).length!=0){
+                            flixtracking.logging('3dfw', 'media', threedfw.threedfwopts, 'howto_open'); 
+                            
+                        }
+                    }
+                })
+
+                if(threedfw.flixDetectWebGLContext()==true){
+
+
+                    FlixjQ('.flix-3dfw-360').unbind('click').on('click', function(){  
+                        log4('.flix-3dfw-360')
+                        FlixjQ('.flix-3dfw-content').hide()                     
+
+                        if(typeof FlixjQ.fn.logging!='undefined' && Object.keys(threedfw.threedfwopts).length!=0 && threedfw.threedfwopts.distributor!='7109')
+                            FlixjQ.fn.logging('3dfw', 'media', threedfw.threedfwopts, '3dfw_open'); 
+
+                        if(typeof flixtracking!='undefined' && Object.keys(threedfw.threedfwopts).length!=0)
+                            flixtracking.logging('3dfw', 'media', threedfw.threedfwopts, '3dfw_open'); 
+
+                        if(!FlixjQ('#flix-3dfwcontainer').length){
+                            var url=FlixjQ(this).attr('data-fwurl');  
+                            var arid=FlixjQ(this).attr('data-fwurl');   
+                            var fwinput='<div id="flix-3dfwcontainer"><div class="flix_3dfw-close"></div><input id="flix-3dfwsrc" type="hidden" data-arid="'+arid+'" data-fwurl="'+url+'"></div>'
+
+                            FlixjQ('.flix-3dfw-content').attr('id', '');
+
+                            FlixjQ('.flix-3dfw-content').after(fwinput);
+                            FlixjQ('input#flix-3dfwsrc').each(function(i){
+                                var this3dfw=FlixjQ(this);
+                                threedfw.init3dfw(this3dfw);
+                            });
+
+                            FlixjQ('#flix-3dfwcontainer .flix_3dfw-close').unbind('click').on('click', function(){ 
+                                log4('.flix-3dfw-close')
+                                FlixjQ('.flix-3dfw-content').show()
+                                FlixjQ(this).closest('#flix-3dfwcontainer').hide();  
+
+                                if(typeof FlixjQ.fn.logging!='undefined' && Object.keys(threedfw.threedfwopts).length!=0 && threedfw.threedfwopts.distributor!='7109')
+                                    FlixjQ.fn.logging('3dfw', 'media', threedfw.threedfwopts, '3dfw_close');  
+                                if(typeof flixtracking!='undefined' && Object.keys(threedfw.threedfwopts).length!=0)
+                                    flixtracking.logging('3dfw', 'media', threedfw.threedfwopts, '3dfw_close'); 
+                                
+                                //stop dwell timer
+                                threedfw.threedfwtimer()
+                            })
+
+                        }else{
+                            FlixjQ('#flix-3dfwcontainer').show()
+                        }
+                        //start dwell timer
+                        threedfw.threedfwtimer()
+                    })
+
+                }else{
+                    
+                    FlixjQ('#flix_selector_3d #flix-3dfwsection .flix-3dfw-content .flix-3dfw-360 .flix-3dfw-360text').css('color', '#ccc')
+                    FlixjQ('#flix_selector_3d #flix-3dfwsection .flix-3dfw-content .flix-3dfw-360 ').css('opacity', '0.6')
+                    FlixjQ('#flix_selector_3d #flix-3dfwsection .flix-3dfw-content .flix-3dfw-360 ').css('cursor', 'auto')
+
+                }
+
+                
+                 
+
+                FlixjQ('.flix-3dfw-lighbox .flix_3dfw-close').unbind('click').on('click', function(){
+                    log4('.flix-3dfw-close')
+                    FlixjQ('.flix-3dfw-lighbox').hide();
+
+                    if(typeof FlixjQ.fn.logging!='undefined' && Object.keys(threedfw.threedfwopts).length!=0 && threedfw.threedfwopts.distributor!='7109')
+                        FlixjQ.fn.logging('3dfw', 'media', threedfw.threedfwopts, 'howto_close');  
+                    if(typeof flixtracking!='undefined' && Object.keys(threedfw.threedfwopts).length!=0)
+                        flixtracking.logging('3dfw', 'media', threedfw.threedfwopts, 'howto_close');       
+                })
+
+                FlixjQ(document).click(function(e) {
+                    var container = FlixjQ(".flix-3dfw-lighbox, .flix-3dfw-qr");
+                    if((container.length>0 && !container.is(e.target) && container.has(e.target).length === 0) && FlixjQ('[id*=lightbox]').length==0 ||(e.target.className=='flix_close') ){
+                        FlixjQ('.flix-3dfw-lighbox').hide();
+                         
+                    }
+                    
+                })
+                
+                function checkmbl(){            
+                    if(FlixjQ('#flix-3dfwsection') && FlixjQ('#flix-3dfwsection').width()==0) {
+                        setTimeout(function() {                        
+                            checkmbl();
+                        }, 1000);                
+                    }else if(FlixjQ('#flix-3dfwsection') && FlixjQ('#flix-3dfwsection').width()<700){
+                        FlixjQ('#flix-3dfwsection').addClass('flix-3dfw-mbl');                
+                    }else{
+                        FlixjQ('#flix-3dfwsection').removeClass('flix-3dfw-mbl');
+                    }
+                }
+                
+                setTimeout(function(){
+                    checkmbl();
+                }, 500);
+                setTimeout(function(){
+                    checkmbl();
+                }, 1000);
+                setTimeout(function(){
+                    checkmbl();
+                }, 1500);
+
+                $(window).resize(function(){
+                    checkmbl();
+                });
+
+            }else{
+                setTimeout(function(){
+                    //if(start3dfwcc<20){
+                        //log4('3DFW not found try again')
+                        threedfw.start3dfw();
+                    //}
+               }, 1000);
+
+            }
+        }
+
+        threedfw.start3dfw();
+
+        var lastt, tdiff, dwelltime;
+        
+        threedfw.threedfwtimer=function(){
+
+            if (lastt && lastt!=0 && lastt!=1) {
+                tdiff = event.timeStamp - lastt;
+                log4('dwelltime' ,tdiff);
+
+                if(typeof FlixjQ.fn.logging!='undefined' && Object.keys(threedfw.threedfwopts).length!=0 && threedfw.threedfwopts.distributor!='7109'){
+                    FlixjQ.fn.logging('3dfw', 'dwelltime', threedfw.threedfwopts, '3dfw_time_'+tdiff);
+                }
+                if(typeof flixtracking!='undefined' && Object.keys(threedfw.threedfwopts).length!=0){
+                    flixtracking.logging('3dfw', 'dwelltime', threedfw.threedfwopts, '3dfw_time_'+tdiff);
+                }
+
+                log4('3dfw timer stop- '+tdiff)
+
+                document.removeEventListener('visibilitychange', threedfw.visibilitychange);
+            
+                lastt=0;
+            } 
+            else if(lastt!=0){ 
+                log4('3dfw timer start'); 
+
+                //check stop dwell when user leaves the page                
+                document.addEventListener('visibilitychange', threedfw.visibilitychange);
+                
+                lastt = event.timeStamp;   
+                  
+            }
+                 
+        }
+
+        var lastt2, tdiff2, launchtime;
+        threedfw.arlaunchtimer=function(){
+
+            if (lastt2 && lastt2!=0 && lastt2!=1) {
+                tdiff2 = event.timeStamp - lastt2;
+                log4('launchtime' ,tdiff2);
+                
+                if(typeof FlixjQ.fn.logging!='undefined' && Object.keys(threedfw.threedfwopts).length!=0 && threedfw.threedfwopts.distributor!='7109')
+                    FlixjQ.fn.logging('3dfw', 'launch', threedfw.threedfwopts, 'ar_time_'+tdiff2);
+                if(typeof flixtracking!='undefined' && Object.keys(threedfw.threedfwopts).length!=0)
+                    flixtracking.logging('3dfw', 'launch', threedfw.threedfwopts, 'ar_time_'+tdiff2);
+
+                log4('ar timer stop- '+tdiff2)
+
+                document.removeEventListener('visibilitychange', threedfw.visibilitychange2);
+            
+                lastt2=0
+            } 
+            else if(lastt2!=0){ 
+                log4('ar timer start'); 
+
+                //check stop dwell when user leaves the page                
+                document.addEventListener('visibilitychange', threedfw.visibilitychange2);
+                
+                lastt2 = event.timeStamp;   
+                  
+            }
+                 
+        }
+
+        var lastt3, tdiff3, dwelltime3;
+        
+        threedfw.ardwelltimer=function(){
+
+            if (lastt3 && lastt3!=0 && lastt3!=1) {
+                tdiff3 = event.timeStamp - lastt3;
+                log4('ar dwelltime' ,tdiff3);
+                
+                if(typeof FlixjQ.fn.logging!='undefined' && Object.keys(threedfw.threedfwopts).length!=0 && threedfw.threedfwopts.distributor!='7109')
+                    FlixjQ.fn.logging('3dfw', 'dwelltime3', threedfw.threedfwopts, 'ar_time_'+tdiff3);
+                if(typeof flixtracking!='undefined' && Object.keys(threedfw.threedfwopts).length!=0)
+                    flixtracking.logging('3dfw', 'dwelltime3', threedfw.threedfwopts, 'ar_time_'+tdiff3);
+
+                log4('ar dwell timer stop- '+tdiff3);
+
+                document.removeEventListener('visibilitychange', threedfw.visibilitychange);
+            
+                lastt3=0
+            } 
+            else if(lastt3!=0){ 
+                log4('ar timer start'); 
+
+                //check stop dwell when user leaves the page                
+                document.addEventListener('visibilitychange', threedfw.visibilitychange);
+                
+                lastt3 = event.timeStamp;   
+                  
+            }
+                 
+        }
+
+        threedfw.visibilitychange=function() {
+            log4('3dfw visibilitychange- '+document.visibilityState)
+            
+            if(document.visibilityState=='hidden')
+                lastt=event.timeStamp;
+            else {
+                threedfw.threedfwtimer();
+                document.removeEventListener('visibilitychange', threedfw.visibilitychange);
+            }            
+        }
+
+        threedfw.visibilitychange2=function() {
+            log4('ar visibilitychange- '+document.visibilityState)
+                        
+            if(document.visibilityState=='hidden')
+                lastt=event.timeStamp;
+            else {
+                threedfw.arlaunchtimer();
+                threedfw.ardwelltimer();
+                document.removeEventListener('visibilitychange', threedfw.visibilitychange2);
+            }
+        }
+
+                
+
+        threedfw.threedfwelementInViewport=function() {
+            var myElement = document.getElementById('flix-3dfwcontainer');
+            if(myElement){
+                var bounding = myElement.getBoundingClientRect();
+                var myElementHeight = myElement.offsetHeight;
+                var myElementWidth = myElement.offsetWidth;
+                var bounding = myElement.getBoundingClientRect();
+
+                if (bounding.top >= -myElementHeight 
+                    && bounding.left >= -myElementWidth
+                    && bounding.right <= (window.innerWidth || document.documentElement.clientWidth) + myElementWidth
+                    && bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) + myElementHeight) {
+
+                    log4('Element is in the viewport!');
+
+                } else {
+
+                    log4('Element is NOT in the viewport!');
+                    
+                    threedfw.threedfwtimer()
+                    
+                    window.removeEventListener('scroll', threedfw.threedfwelementInViewport);
+                }
+            }
+        }
+
+        window.addEventListener('scroll', threedfw.threedfwelementInViewport);
+        
+        
+
+    })
+})(FlixjQ);
+
+
+
+/*3dfw ends*/
+
+
+
+
+

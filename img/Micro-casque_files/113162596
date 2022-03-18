@@ -1,0 +1,161 @@
+/* #1294735314 */
+_oEa.pmdenyall = 0;_oEa.hpmdeny = _oEa.hpmdeny || {};_oEa.pmpass = function( pmcat, tcfv2vendor, tcfv2purpose, tcfv2customvendor, tcfv2sfeature ) {var o = _oEa;return 1;};
+_oEa.website("fnac");if (_oEa.isdef(typeof _oEa.uidset )) {_oEa.uidset("OA3In2nSrHQEGHd.V0vRSHalNUuF.wlXMdqJHMt7LyNSTYfIWHDezw--");}var _EaCP = {"cgip" : _oEa.hcgi,"tp":{"":""}};_oEa.jsbwr = {'s'   : '//eultech.fnac.com/w.js', /* DomWrite */'pre' : function(){ _oEaDWR.capture(); },'post': function(){ _oEaDWR.render(_oEa.b); }};if (typeof _oEa.gloadtimeout !== 'function') {_oEa.gloadtimeout = function( to, id, tg ) {};}_oEa._arunpush = function(x,f) { _oEa[x] = _oEa[x]||[]; _oEa[x].push(f); };_oEa._arunpush2 = function(x,f) { _oEa._arunpush(x,f);_oEa._arunpush(x+'NC',f); };_oEa._arun = function(x,p) { var a=_oEa[x];_oEa[x]=[];a.forEach(function(f){f(p);}); };_oEa.mtrun = function(nc) { _oEa._arun( '_amtrun'+((nc)?'NC':''), nc ); };_oEa.dcrun = function(nc) { _oEa._arun( '_adcrun'+((nc)?'NC':''), nc ); };
+_oEa._arunpush2('_adcrun',function( nc ) { /* nc: no consent */
+_oEa.xpathdc = {};
+if (!nc && _oEa.pmdenyall) { return; }
+/* {dc:3286,mode:DW,dcn:Acheteurs ebook} */
+/* {dc:3304,mode:DW,dcn:DMP_Drone_Acheteurs_Site} */
+/* {dc:3322,mode:DW,dcn:DMP_TV_Acheteurs} */
+/* {dc:4657,mode:DW,dcn:eulerian_vers_bigquery - collector} */
+});
+_oEa._arunpush2('_amtrun',function( nc ) {
+_oEa.xpathmt = {};
+if (_oEa.pmdenyall) { return; }
+/* {ccmt:19,ccmth:19,isnative,view:0,hdlr:tag,mtpmcat:,ccmtn:google-invite-cm} */
+if ( !nc && _oEa.pmpass('',
+ '','',
+ '',''
+) )
+{
+try{
+/* Native */
+_oEa.gloadtimeout(5000,"EMfNwnYS.kZtdivW2eFy6DHYFEME5Mn3wnp63vc-",_oEa.gloadimg("https://cm.g.doubleclick.net/pixel?google_nid=eulerian_dmp&google_cm&ethost=eultech.fnac.com&etws=fnac"));
+ /* /mtjs */
+}catch(e){if (_oEa.logsend){_oEa.logsend('mt','19',e);}else{_oEa.log('mt',e);}}
+}
+/* {ccmt:46,ccmth:46,isnative,view:0,hdlr:tag,mtpmcat:,ccmtn:smartadserver-cm} */
+if ( !nc && _oEa.pmpass('',
+ '','',
+ '',''
+) )
+{
+try{
+/* Native */
+_oEa.gloadtimeout(5000,"EMfNwnYS.kZtdivW2TBjQOrj6aeiTTPSf1g71ZM-",_oEa.gloadimg("https://sync.smartadserver.com/getuid?gdpr=0&gdpr_consent=&url=https:%2F%2Feultech.fnac.com%2Frpset%2Ffnac%2F%3Fsasid%3D[sas_uid]"));
+ /* /mtjs */
+}catch(e){if (_oEa.logsend){_oEa.logsend('mt','46',e);}else{_oEa.log('mt',e);}}
+}
+/* {ccmt:55,ccmth:55,isnative,view:0,hdlr:tag,mtpmcat:,ccmtn:criteo-cm} */
+if ( !nc && _oEa.pmpass('',
+ '','',
+ '',''
+) )
+{
+try{
+/* Native */
+_oEa.gloadtimeout(5000,"EMfNwnYS.kZtdivW2a7LtP_yvC0Qs6zCdBZhyYY-",_oEa.gloadimg("https://gum.criteo.com/sync?c=12&r=1&u=https://eultech.fnac.com/rpset/fnac/1294735314%3Fcgumid%3D%40USERID%40"));
+ /* /mtjs */
+}catch(e){if (_oEa.logsend){_oEa.logsend('mt','55',e);}else{_oEa.log('mt',e);}}
+}
+/* {ccmt:73,ccmth:73,isnative,view:0,hdlr:tag,mtpmcat:,ccmtn:eulerian-e3rd} */
+if ( !nc && _oEa.pmpass('',
+ '','',
+ '',''
+) )
+{
+try{
+/* Native */
+1;
+ /* /mtjs */
+}catch(e){if (_oEa.logsend){_oEa.logsend('mt','73',e);}else{_oEa.log('mt',e);}}
+}
+/* {ccmt:193,ccmth:193,isnative,view:0,hdlr:tag,mtpmcat:,ccmtn:facebook-mta-cm} */
+if ( !nc && _oEa.pmpass('',
+ '','',
+ '',''
+) )
+{
+try{
+/* Native */
+_oEa.gloadtimeout(5000,"DEQwyRwgEDJm_8YpRfi3IibeYI3.ARsFndItQZgE",_oEa.gloadimg("https://www.facebook.com/tr?id=764431610788770&ev=PageView&cd[order_id]=11645360847236754362&noscript=1"));
+ /* /mtjs */
+}catch(e){if (_oEa.logsend){_oEa.logsend('mt','193',e);}else{_oEa.log('mt',e);}}
+}
+/* {ccmt:205,ccmth:205,isnative,view:0,hdlr:tag,mtpmcat:,ccmtn:nextperf-cm} */
+if ( !nc && _oEa.pmpass('',
+ '','',
+ '',''
+) )
+{
+try{
+/* Native */
+_oEa.gloadtimeout(5000,"DEQwyRwgEDJm_8YpRfgc.bitSI0lWhv7acuzdiGg",_oEa.gloadimg("https://nxtck.com/fwd.php?loc=https://eultech.fnac.com/rpset/fnac/1294735314%3Fnxpid%3D{uuid}"));
+ /* /mtjs */
+}catch(e){if (_oEa.logsend){_oEa.logsend('mt','205',e);}else{_oEa.log('mt',e);}}
+}
+/* {ccmt:217,ccmth:217,isnative,view:0,hdlr:tag,mtpmcat:,ccmtn:thetradedesk-cm} */
+if ( !nc && _oEa.pmpass('',
+ '','',
+ '',''
+) )
+{
+try{
+/* Native */
+_oEa.gloadtimeout(5000,"DEQwyRwgEDJm_8YpRfgPcc6G7B2BWBp9zs_78y4a",_oEa.gloadimg("//match.adsrvr.org/track/cmf/generic?ttd_pid=mit4gnn&ttd_tpi=1&ttd_puid=eultech.fnac.com&ttd_puid=fnac"));
+ /* /mtjs */
+}catch(e){if (_oEa.logsend){_oEa.logsend('mt','217',e);}else{_oEa.log('mt',e);}}
+}
+/* {ccmt:229,ccmth:229,isnative,view:0,hdlr:tag,mtpmcat:,ccmtn:googleanalytics-cm} */
+if ( !nc && _oEa.pmpass('',
+ '','',
+ '',''
+) )
+{
+try{
+/* Native */
+if(_oEa.isdef(typeof window.ga)){window.ga(function(tracker){var clientId=tracker ? tracker.get('clientId'):'';if(!clientId.length){var value="; "+window.document.cookie,parts=value.split("; _ga=");if(parts.length===2){clientId=parts.pop().split(";").shift();}}if(!clientId.length){return '';}_oEa.gloadtimeout(5000,"DEQwyRwgEDJm_8YpRfg_Ak9n_S2Afz.kEBUvpWij",_oEa.gloadimg("//eultech.fnac.com/rpset/fnac/1294735314?gacid="+clientId));});}
+ /* /mtjs */
+}catch(e){if (_oEa.logsend){_oEa.logsend('mt','229',e);}else{_oEa.log('mt',e);}}
+}
+/* {ccmt:241,ccmth:241,isnative,view:0,hdlr:tag,mtpmcat:,ccmtn:sizmek-cm} */
+if ( !nc && _oEa.pmpass('',
+ '','',
+ '',''
+) )
+{
+try{
+/* Native */
+_oEa.gloadtimeout(5000,"DEQwyRwgEDJm_8YpRfijCr4Ki4J8Z4v27y.4Zx28",_oEa.gloadimg("https://bs.serving-sys.com/serving?cn=um&dpid=36&redir=1&rtu=https://eultech.fnac.com/rpset/fnac/1294735314%3Fszmkid%3D%5B%25tp_SyncUserID%25%5D"));
+ /* /mtjs */
+}catch(e){if (_oEa.logsend){_oEa.logsend('mt','241',e);}else{_oEa.log('mt',e);}}
+}
+/* {ccmt:253,ccmth:253,isnative,view:0,hdlr:tag,mtpmcat:,ccmtn:smadex-cm} */
+if ( !nc && _oEa.pmpass('',
+ '','',
+ '',''
+) )
+{
+try{
+/* Native */
+_oEa.gloadtimeout(5000,"DEQwyRwgEDJm_8YpRfiQhd1VoMKqIGLkcQ_GOZAP",_oEa.gloadimg("https://cm.smadex.com/pixel?sm_did=eulerian&sm_redir=https://eultech.fnac.com/rpset/fnac/1294735314?smdxid={$COOKIE_ID$}"));
+ /* /mtjs */
+}catch(e){if (_oEa.logsend){_oEa.logsend('mt','253',e);}else{_oEa.log('mt',e);}}
+}
+/* {ccmt:265,ccmth:265,isnative,view:0,hdlr:tag,mtpmcat:,ccmtn:zebestof-cm} */
+if ( !nc && _oEa.pmpass('',
+ '','',
+ '',''
+) )
+{
+try{
+/* Native */
+_oEa.gloadtimeout(5000,"DEQwyRwgEDJm_8YpRfiy5QyQ2ieqHb2cyJkLDL4i",_oEa.gloadimg("https://dpm.zebestof.com/sync?url=https://eultech.fnac.com/rpset/fnac/%3Fzboid%3D%24%7BZBO_ID%7D"));
+ /* /mtjs */
+}catch(e){if (_oEa.logsend){_oEa.logsend('mt','265',e);}else{_oEa.log('mt',e);}}
+}
+/* {ccmt:277,ccmth:277,isnative,view:0,hdlr:tag,mtpmcat:,ccmtn:criteo-cigs-cm} */
+if ( !nc && _oEa.pmpass('',
+ '','',
+ '',''
+) )
+{
+try{
+/* Native */
+function getCriteoIGSId(){var value="; "+window.document.cookie,parts=value.split("; cto_axid=");if(parts.length===2){return parts.pop().split(";").shift();}return '';}var caxid=getCriteoIGSId();if(caxid && caxid.length){_oEa.gloadtimeout(5000,"DEQwyRwgEDJm_8YpRfilL97RmB_gENW_zgDmy._K",_oEa.gloadimg("//eultech.fnac.com/rpset/fnac/1294735314?caxid="+caxid));}
+ /* /mtjs */
+}catch(e){if (_oEa.logsend){_oEa.logsend('mt','277',e);}else{_oEa.log('mt',e);}}
+}
+});
+_oEa.waitPM = function(f) {var o = _oEa;return 0;};_oEa.mtdcrun = function() {var o = _oEa;if (o.waitPM(o.mtdcrun)) { return; }o.mtrun();o.dcrun();};_oEa.mtdcrunNC = function() {var o = _oEa;o.dcrun(1);o.mtrun(1);};_oEa.mtdcrunNC();_oEa.mtdcrun();/* end !pmistcfv2 */_oEa.websiteend();
+ /* end !config */
