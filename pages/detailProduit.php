@@ -75,7 +75,7 @@ try {
 
 ?>
     <div class="container bg-dark">
-        <div class="mx-auto bg-info w-50" id="detailProduit">
+        <div class="mx-auto bg-info w-50" id="detailProduit">&²
 
             <img src="<?= $detailProduit['imageProduit'] ?>"/>
             

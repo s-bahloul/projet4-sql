@@ -84,7 +84,7 @@ if(isset($_SESSION['email'])){
                         <th class="text-white" scope="row"><?=$user['idUsers']?></th>
                             <td class="text-white" ><?=$user['email']?></td>
                             <td class="text-white" ><?=$user['password']?></td>
-                            <td><a class="btn btn-info text-white"  href="suprimUser.php?idUser=<?=$user['idUsers'] ?>">Suprimer</a></td>
+                            <td><a class="btn btn-info text-white"  href="suprimUser.php?idUser=<?=$user['idUsers'] ?>">Supprimer</a></td>
                     </tr>
                     
                 <?php

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="179b6129-e802-48ad-9761-8c39f03ec379" name="Default Changelist" comment="" />
+    <list default="true" id="179b6129-e802-48ad-9761-8c39f03ec379" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/administrateurs.php" beforeDir="false" afterPath="$PROJECT_DIR$/pages/administrateurs.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/detailProduit.php" beforeDir="false" afterPath="$PROJECT_DIR$/pages/detailProduit.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/navbar.php" beforeDir="false" afterPath="$PROJECT_DIR$/pages/navbar.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -9,6 +14,9 @@
   </component>
   <component name="ComposerSettings">
     <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="26PyZZnbmzqkRawE5STT316gKw3" />
   <component name="ProjectViewState">
@@ -18,7 +26,13 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../projetecolegourpephp" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -30,7 +44,13 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1647339572992</updated>
-      <workItem from="1647339574232" duration="2111000" />
+      <workItem from="1647339574232" duration="2661000" />
+      <workItem from="1651667033197" duration="12000" />
+      <workItem from="1666007381059" duration="652000" />
+      <workItem from="1666212169237" duration="161000" />
+      <workItem from="1666391405111" duration="22000" />
+      <workItem from="1667376152603" duration="43000" />
+      <workItem from="1667437502980" duration="387000" />
     </task>
     <servers />
   </component>
@@ -38,9 +58,9 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="184" y="9" key="SettingsEditor" timestamp="1647339645504">
-      <screen x="0" y="0" width="1366" height="728" />
+    <state x="-1414" y="68" key="FileChooserDialogImpl" timestamp="1667437888640">
+      <screen x="-1680" y="-192" width="1680" height="1010" />
     </state>
-    <state x="184" y="9" key="SettingsEditor/0.0.1366.728/-1920.-156.1920.1040@0.0.1366.728" timestamp="1647339645504" />
+    <state x="-1414" y="68" key="FileChooserDialogImpl/0.0.1366.728/-1680.-192.1680.1010@-1680.-192.1680.1010" timestamp="1667437888640" />
   </component>
 </project>
